@@ -1,0 +1,9 @@
+{
+  "name": "common",
+  "version": "1.0.0",
+  "description": "For storing public data.",
+  "main": "Index.ets",
+  "author": "JinnyWang",
+  "license": "Apache-2.0",
+  "dependencies": {}
+}

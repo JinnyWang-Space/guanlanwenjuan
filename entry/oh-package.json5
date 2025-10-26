@@ -1,0 +1,14 @@
+{
+  "name": "entry",
+  "version": "1.0.0",
+  "description": "Program entry.",
+  "main": "Index.ets",
+  "author": "JinnyWang",
+  "license": "",
+  "dependencies": {
+    "common": "file:../common",
+    "home": "file:../features/home",
+    "mine": "file:../features/mine"
+  }
+}
+

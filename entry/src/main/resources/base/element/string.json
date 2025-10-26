@@ -1,0 +1,36 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "module description"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "label"
+    },
+    {
+      "name": "side_bar_all",
+      "value": "全部问卷"
+    },
+    {
+      "name": "side_bar_collecting",
+      "value": "正在收集"
+    },
+    {
+      "name": "side_bar_collected",
+      "value": "收集完成"
+    },
+    {
+      "name": "side_bar_no_collect",
+      "value": "未收集"
+    },
+    {
+      "name": "side_bar_delete",
+      "value": "废纸篓"
+    }
+  ]
+}
