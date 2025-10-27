@@ -4,7 +4,6 @@ import { SideBarListModel } from "../model/SideBarListModel";
 import { SideBarListViewModel } from "../viewmodel/SideBarListViewModel";
 import { ShowListModel } from "../model/ShowListModel";
 import { ShowListViewModel } from "../viewmodel/ShowListViewModel";
-import { CreateQBuilder } from "./CreateQ";
 
 // 创建窗口实例
 let windowStage: window.WindowStage;
@@ -21,13 +20,11 @@ export struct ContentView {
   @Consumer('sideBarIndex') mainIndex: number = 0;
   // 创建主视图列表数据实例
   private showListVM: ShowListModel[] = new ShowListViewModel().mainVM;
-
-  // 用于监听是否显示创建问卷半模态页面
-  @Local isCreateQ: boolean = false;
-
   // 菜单栏创建问卷图标
   @Local menuIconModifier1: SymbolGlyphModifier =
     new SymbolGlyphModifier($r('sys.symbol.doc_plaintext')).fontSize('24vp').fontColor([Color.Gray]);
+  // 创建导航器实例（子）
+  @Consumer('pageInfo') pageInfos: NavPathStack = new NavPathStack();
 
   // 菜单
   @Builder
@@ -36,7 +33,7 @@ export struct ContentView {
       MenuItem({ symbolStartIcon: this.menuIconModifier1, content: "创建问卷" })
         .onChange((selected: boolean) => {
           if (selected) {
-            this.isCreateQ = true;
+            this.pageInfos.pushPath({ name: 'pageCreateQ' })
           }
         })
     }
@@ -44,6 +41,7 @@ export struct ContentView {
 
   build() {
     Stack({ alignContent: Alignment.TopStart }) {
+      // 标题栏
       Row() {
         Text(this.mainVM[this.mainIndex].label)
           .fontSize(26)
@@ -79,10 +77,12 @@ export struct ContentView {
       .zIndex(1)
       .backgroundBlurStyle(BlurStyle.BACKGROUND_THICK)
 
+      // 主体视图
       Scroll() {
         Column() {
           Blank()
             .height(this.getUIContext().px2vp(this.windowUtil.mainWindowInfo.AvoidSystem?.topRect.height) + 56 + 38)
+
           if (this.mainIndex === 0) {
             List({ space: 32 }) {
               ForEach(this.showListVM, (item: ShowListModel, index: number) => {
@@ -169,7 +169,7 @@ export struct ContentView {
                         right: 16
                       })
                     }
-                    .bindMenu(index === 0 ? this.createMenu() : () => {
+                    .bindMenu(index === 0 ? this.createMenu : () => {
                     })
                     .backgroundColor($r('sys.color.comp_background_primary'))
                     .borderRadius(12)
@@ -190,29 +190,12 @@ export struct ContentView {
             .padding({ left: this.isShowSidebar ? 32 : 32 + 140, right: this.isShowSidebar ? 32 : 32 + 140 })
             .animation({ duration: 400, curve: Curve.EaseInOut })
           }
-
         }
       }
       .align(Alignment.Top)
       .scrollBar(BarState.Off)
       .edgeEffect(EdgeEffect.Spring)
     }
-    .bindSheet(this.isCreateQ!!, CreateQBuilder(), {
-      width: 650,
-      height: '90%',
-      showClose: false,
-      preferType: SheetType.CENTER,
-      onWillDismiss: (dismissSheetAction: DismissSheetAction) => {
-        // 三键，手势，esc返回
-        if (dismissSheetAction.reason === DismissReason.PRESS_BACK) {
-          dismissSheetAction.dismiss();
-        }
-        // 关闭按钮返回
-        if (dismissSheetAction.reason === DismissReason.CLOSE_BUTTON) {
-          dismissSheetAction.dismiss();
-        }
-      }
-    })
   }
 }
 

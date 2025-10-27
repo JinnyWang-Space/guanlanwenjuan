@@ -2,8 +2,11 @@ import { SideBarListModel } from "../model/SideBarListModel"
 
 @ComponentV2
 export struct SideMenu {
+  // 接收父组件传来的列表数据
   @Param @Require items: SideBarListModel[];
+  // 接收父组件传来的索引值
   @Param @Require selectedIndex: number;
+  // 子组件改变item索引值传递回父组件
   @Event changeIndex: (selectedIndex: number) => void = (selectedIndex: number) => {
   };
 

@@ -3,6 +3,7 @@ import { WindowUtil } from 'common';
 import { HdsSideBar } from '@hms.hds.HdsSideBar';
 import { sideBarPanelBuilder } from '../view/SideBarView';
 import { ContentPanelBuilder } from '../view/ContentView';
+import { HdsNavigation, HdsNavigationAttribute } from '@hms.hds.hdsBaseComponent';
 
 // 创建窗口实例
 let windowStage: window.WindowStage;
@@ -15,8 +16,8 @@ struct Index {
     AppStorageV2.connect(WindowUtil, () => new WindowUtil(windowStage.getMainWindowSync()))!;
   // 是否显示侧边栏按钮，默认位 false
   @Provider('isShowSideBar') isShowSidebar: boolean = false;
-
-  @Provider('sideBarIndex') sideBarIndex:number = 0;
+  // 用于监听侧边栏当前所选item对应的索引值
+  @Provider('sideBarIndex') mainIndex: number = 0;
 
   // 判断侧边栏是否显示
   getIsSideBar(): void {
@@ -39,10 +40,15 @@ struct Index {
     this.getIsSideBar();
   }
 
+  // 侧边栏
   @BuilderParam sideBarBuilder: () => void = sideBarPanelBuilder;
+  // 内容区
   @BuilderParam contentBuilder: () => void = ContentPanelBuilder;
+  // 创建导航器实例（父）
+  @Provider('pageInfo') pageInfos: NavPathStack = new NavPathStack();
 
   build() {
+    HdsNavigation(this.pageInfos) {
       Stack({ alignContent: Alignment.TopStart }) {
         // 侧边栏按钮
         Button() {
@@ -70,11 +76,14 @@ struct Index {
           contentAreaMask: true,
           isShowSideBar: this.isShowSidebar!,
           minSideBarWidth: 280,
-          sideBarColor:$r('sys.color.hds_sidebar_overlay'),
+          sideBarColor: $r('sys.color.hds_sidebar_overlay'),
           sideBarPanelBuilder: (): void => this.sideBarBuilder(),
           contentPanelBuilder: (): void => this.contentBuilder(),
           sideBarContainerType: this.getSideBarType()
         })
       }
+    }
+    .hideTitleBar(true)
+    .mode(NavigationMode.Stack)
   }
 }

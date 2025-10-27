@@ -14,7 +14,7 @@ export struct SideBarView {
     AppStorageV2.connect(WindowUtil, () => new WindowUtil(windowStage.getMainWindowSync()))!;
   // 创建侧边栏列表数据实例
   private mainVM: SideBarListModel[] = new SideBarListViewModel().mainVM;
-  // 侧边栏当前所选item对应的索引值
+  // 用于监听侧边栏当前所选item对应的索引值
   @Consumer('sideBarIndex') mainIndex:number = 0;
 
   build() {
@@ -29,6 +29,7 @@ export struct SideBarView {
         .padding({ left: 24 })
         .margin({ top: 24, bottom: 12 })
 
+      // SideBar菜单栏，不用 HdsSideMenu，因为不能高度自定义，例如：UI
       SideMenu({
         items: this.mainVM,
         selectedIndex: this.mainIndex,

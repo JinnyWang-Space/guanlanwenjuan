@@ -1,0 +1,12 @@
+{
+  "routerMap": [
+    {
+      "name": "pageCreateQ",
+      "pageSourceFile": "src/main/ets/view/CreateQ.ets",
+      "buildFunction": "PageCreateQBuilder",
+      "data": {
+        "description": "This is page for create questionnaire."
+      }
+    }
+  ]
+}
