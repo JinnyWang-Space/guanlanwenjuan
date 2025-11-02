@@ -6,6 +6,7 @@ export class SideBarListViewModel{
     new SideBarListModel(1,$r('app.string.side_bar_collecting'),$r('sys.symbol.doc_plaintext_and_pencil'),0),
     new SideBarListModel(2,$r('app.string.side_bar_collected'),$r('sys.symbol.checkmark_clipboard'),0),
     new SideBarListModel(3,$r('app.string.side_bar_no_collect'),$r('sys.symbol.doc'),0),
-    new SideBarListModel(4,$r('app.string.side_bar_delete'),$r('sys.symbol.trash'),0)
+    new SideBarListModel(4,$r('app.string.side_bar_delete'),$r('sys.symbol.trash'),0),
+    new SideBarListModel(5,$r('app.string.side_bar_survey_market'),$r('sys.symbol.bookmark'),0)
   ]
 }

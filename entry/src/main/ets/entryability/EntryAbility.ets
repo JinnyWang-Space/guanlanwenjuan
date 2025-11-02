@@ -1,7 +1,7 @@
 import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { AppStorageV2, window } from '@kit.ArkUI';
-import { WindowUtil, ImmersiveType } from 'common';
+import { WindowUtil, ImmersiveType, DistributedDB } from 'common';
 
 const DOMAIN = 0x0000;
 
@@ -34,6 +34,7 @@ export default class EntryAbility extends UIAbility {
         return;
       }
       hilog.info(DOMAIN, 'testTag', 'Succeeded in loading the content.');
+
 
       this.windowUtil!.setUIContext();
       this.windowUtil!.setImmersiveType(ImmersiveType.IMMERSIVE);

@@ -1,12 +1,27 @@
 {
   "routerMap": [
     {
-      "name": "pageCreateQ",
-      "pageSourceFile": "src/main/ets/view/CreateQ.ets",
-      "buildFunction": "PageCreateQBuilder",
+      "name": "CreateSurveyView",
+      "pageSourceFile": "src/main/ets/view/CreateSurveyView.ets",
+      "buildFunction": "CreateSurveyBuilder",
       "data": {
         "description": "This is page for create questionnaire."
       }
+    },
+    {
+      "name": "CheckSurveyView",
+      "pageSourceFile": "src/main/ets/view/CheckSurveyView.ets",
+      "buildFunction": "CheckSurveyBuilder"
+    },
+    {
+      "name": "MarketSurveyView",
+      "pageSourceFile": "src/main/ets/view/MarketSurveyView.ets",
+      "buildFunction": "MarketSurveyBuilder"
+    },
+    {
+      "name": "ToolView",
+      "pageSourceFile": "src/main/ets/view/ToolView.ets",
+      "buildFunction": "ToolBuilder"
     }
   ]
 }

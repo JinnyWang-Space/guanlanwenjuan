@@ -31,6 +31,10 @@
     {
       "name": "side_bar_delete",
       "value": "废纸篓"
+    },
+    {
+      "name": "side_bar_survey_market",
+      "value": "问卷模板"
     }
   ]
 }
