@@ -1,8 +1,8 @@
 import { DistributedDB, Survey, SurveyStatus, WindowUtil } from "common";
-import { AppStorageV2, promptAction, SymbolGlyphModifier, window } from "@kit.ArkUI";
 import { SideBarListViewModel } from "../viewmodel/SideBarListViewModel";
 import { SideBarListModel } from "../model/SideBarListModel";
 import { SideMenu } from "../components/SideMenu";
+import { AppStorageV2, window } from "@kit.ArkUI";
 
 // 创建窗口实例
 let windowStage: window.WindowStage;
@@ -61,6 +61,7 @@ export struct SideBarView {
     }
     .width('100%')
     .height('100%')
+    .backgroundColor($r('sys.color.comp_background_primary'))
   }
 }
 

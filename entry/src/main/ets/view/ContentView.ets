@@ -1,4 +1,4 @@
-import { DistributedDB, Survey, SurveyStatus, WindowUtil } from "common";
+import { DistributedDB, Survey, SurveyStatus, WidthBreakpointType, WindowUtil } from "common";
 import { AppStorageV2, promptAction, SymbolGlyphModifier, window } from "@kit.ArkUI";
 import { SideBarListModel } from "../model/SideBarListModel";
 import { SideBarListViewModel } from "../viewmodel/SideBarListViewModel";
@@ -6,6 +6,10 @@ import { ShowListModel } from "../model/ShowListModel";
 import { ShowListViewModel } from "../viewmodel/ShowListViewModel";
 import { common } from "@kit.AbilityKit";
 import { HdsNavigation, HdsNavigationAttribute, HdsNavigationTitleMode } from "@hms.hds.hdsBaseComponent";
+import { image } from "@kit.ImageKit";
+import { generateBarcode, scanCore } from "@kit.ScanKit";
+import { BusinessError } from '@kit.BasicServicesKit'
+import { FunctionComponent } from "@hms.ai.AgentFramework";
 
 // 创建窗口实例
 let windowStage: window.WindowStage;
@@ -32,6 +36,9 @@ export struct ContentView {
   // 修改菜单栏创建问卷图标 ———— 恢复
   @Local MenuIconModifierRestore: SymbolGlyphModifier =
     new SymbolGlyphModifier($r('sys.symbol.arrow_counterclockwise')).fontSize('24vp').fontColor([Color.Gray]);
+  // 修改菜单栏创建问卷图标 ———— 立即发布
+  @Local MenuIconModifierPublish: SymbolGlyphModifier =
+    new SymbolGlyphModifier($r('sys.symbol.paperplane')).fontSize('24vp').fontColor([Color.Gray]);
   // 修改菜单栏创建问卷图标 ———— 删除
   @Local MenuIconModifierTrash: SymbolGlyphModifier =
     new SymbolGlyphModifier($r('sys.symbol.trash')).fontSize('24vp').fontColor([Color.Gray]);
@@ -43,9 +50,39 @@ export struct ContentView {
 
   // 一系列修改菜单
   @Builder
-  MenuView(surveyId: number) {
+  MenuView(surveyId: number, index: number) {
     if (this.sideBarMainIndex < 4) {
       Menu() {
+        if (this.sideBarMainIndex === 3) {
+          MenuItem({ symbolStartIcon: this.MenuIconModifierTrash, content: "立即发放" })
+            .onClick(async () => {
+              let survey: Survey = new Survey();
+              survey = await this.distributedDB.getSurveyById(surveyId) as Survey;
+              promptAction.openToast({ message: JSON.stringify(survey), duration: 500000 })
+              // 以QR码为例，码图生成参数
+              this.pixelMap = undefined;
+              let content = JSON.stringify(survey);
+              let options: generateBarcode.CreateOptions = {
+                scanType: scanCore.ScanType.QR_CODE,
+                height: 400,
+                width: 400
+              }
+              try {
+                // 码图生成接口，成功返回PixelMap格式图片
+                generateBarcode.createBarcode(content, options).then((pixelMap: image.PixelMap) => {
+                  this.pixelMap = pixelMap;
+                }).catch((error: BusinessError) => {
+                  console.error('[generateBarcode]',
+                    `Failed to get PixelMap by promise with options. Code: ${JSON.stringify(error.code)},message:${error.message}`);
+                })
+              } catch (error) {
+                console.error('[generateBarcode]',
+                  `Failed to createBarcode by promise with options. Code: ${error.code}, message: ${error.message}`);
+              }
+
+            })
+        }
+
         MenuItem({ symbolStartIcon: this.MenuIconModifierTrash, content: "删除" })
           .onClick(async () => {
             const success: boolean = await this.distributedDB.deleteSurvey(surveyId, false);
@@ -119,10 +156,14 @@ export struct ContentView {
     await this.distributedDB.setDistributedTables(this.getUIContext().getHostContext() as common.UIAbilityContext);
   }
 
+  @Local pixelMap: image.PixelMap | undefined = undefined;
+  @Local showListMargin: number = 0;
+
   build() {
     Stack({ alignContent: Alignment.TopStart }) {
       // 标题栏
       Row() {
+        // 标题
         Text(this.mainVM[this.sideBarMainIndex].label)
           .fontSize(26)
           .fontWeight(FontWeight.Bold)
@@ -131,9 +172,40 @@ export struct ContentView {
 
         Blank()
 
-        Search()
-          .width('30%')
+        if (this.windowUtil.mainWindowInfo.widthBp < WidthBreakpoint.WIDTH_MD) {
+          Button() {
+            SymbolGlyph($r('sys.symbol.magnifyingglass'))
+              .fontWeight(FontWeight.Normal)
+              .fontSize(24)
+              .fontColor([$r('sys.color.ohos_id_color_titlebar_icon')])
+          }
+          .backgroundColor($r('sys.color.ohos_id_color_button_normal'))
+          .height(40)
+          .width(40)
           .margin({ right: 12 })
+          .onClick(() => {
+            this.pageInfos.pushPath({ name: 'SearchView' });
+          })
+        } else {
+          Search()
+            .width('30%')
+            .margin({ right: 12 })
+        }
+
+        Button() {
+          SymbolGlyph($r('sys.symbol.line_viewfinder'))
+            .fontWeight(FontWeight.Normal)
+            .fontSize(24)
+            .fontColor([$r('sys.color.ohos_id_color_titlebar_icon')])
+        }
+        .backgroundColor($r('sys.color.ohos_id_color_button_normal'))
+        .height(40)
+        .width(40)
+        .margin({ right: 12 })
+        .onClick(() => {
+
+        })
+
         Button() {
           SymbolGlyph($r('sys.symbol.dot_grid_2x2'))
             .fontWeight(FontWeight.Normal)
@@ -159,12 +231,23 @@ export struct ContentView {
       Scroll() {
         Column() {
           Blank()
-            .height(this.getUIContext().px2vp(this.windowUtil.mainWindowInfo.AvoidSystem?.topRect.height) + 56 + 38)
+            .height(
+              new WidthBreakpointType(
+                this.getUIContext().px2vp(this.windowUtil.mainWindowInfo.AvoidSystem?.topRect.height) + 56 + 24,
+                this.getUIContext().px2vp(this.windowUtil.mainWindowInfo.AvoidSystem?.topRect.height) + 56 + 24,
+                this.getUIContext().px2vp(this.windowUtil.mainWindowInfo.AvoidSystem?.topRect.height) + 56 +
+                  38).getValue(this.windowUtil.mainWindowInfo.widthBp)
+            )
 
-          Text(JSON.stringify(this.surveys))
+          // Text(JSON.stringify(this.surveys))
+
+          // 获取生成码后显示
+          if (this.pixelMap) {
+            Image(this.pixelMap).width(300).height(300).objectFit(ImageFit.Contain)
+          }
 
           if (this.sideBarMainIndex < 5) {
-            List({ space: 32 }) {
+            List({ space: new WidthBreakpointType(16, 16, 32).getValue(this.windowUtil.mainWindowInfo.widthBp) }) {
               ForEach(this.showList, (item: ShowListModel, index: number) => {
                 ListItem() {
                   Stack() {
@@ -173,14 +256,14 @@ export struct ContentView {
                       Button() {
                         SymbolGlyph($r('sys.symbol.dot_grid_1x2'))
                           .fontSize(24)
-                          .fontColor([Color.Gray])
+                          .fontColor([$r('sys.color.ohos_id_color_titlebar_icon')])
                       }
                       .width(40)
                       .height(40)
                       .backgroundColor($r('sys.color.ohos_id_color_background_transparent'))
                       .zIndex(1)
-                      .position({ top: 20, right: 16 })
-                      .bindMenu(this.MenuView(item.id))
+                      .position({ top: 20, right: 12 })
+                      .bindMenu(this.MenuView(item.id, index))
                     }
                     // item 视图
                     Row() {
@@ -210,14 +293,18 @@ export struct ContentView {
                             Text(item.label)
                               .fontSize(16)
                               .fontWeight(FontWeight.Medium)
+                              .maxLines(2)
+                              .textOverflow({ overflow: TextOverflow.Ellipsis })
                             Text(new Date(parseInt(item.deltaT)).toLocaleDateString())
                               .fontSize(14)
                               .fontColor(Color.Gray)
                               .margin({ bottom: 6 })
                           }
+                          .layoutWeight(1)
                           .height('100%')
                           .justifyContent(FlexAlign.End)
                           .alignItems(HorizontalAlign.Start)
+                          .padding({ right: 40 })
                         }
 
                         Blank()
@@ -265,18 +352,17 @@ export struct ContentView {
                         this.pageInfos.pushPath({ name: 'CheckSurveyView', param: item.id })
                     })
                   }
+                  .clickEffect({ level: ClickEffectLevel.LIGHT })
                 }
               }, (item: ShowListModel, index: number) => JSON.stringify(item) + index)
             }
             .width('100%')
             .layoutWeight(1)
             .listDirection(Axis.Vertical)
-            .lanes(2, 32)
+            .lanes(new WidthBreakpointType(1, 2, 2).getValue(this.windowUtil.mainWindowInfo.widthBp), 32)
             .contentEndOffset(24)
-            .padding({ left: this.isShowSidebar ? 32 : 32 + 140, right: this.isShowSidebar ? 32 : 32 + 140 })
-            .animation({ duration: 400, curve: Curve.EaseInOut })
           } else {
-            List({ space: 32 }) {
+            List({ space: new WidthBreakpointType(16, 16, 32).getValue(this.windowUtil.mainWindowInfo.widthBp) }) {
               ForEach(this.marketList, (item: ShowListModel, index: number) => {
                 ListItem() {
                   // item 视图
@@ -298,11 +384,12 @@ export struct ContentView {
                       })
                       .margin({ right: 16 })
 
-                      Column({ space: 12 }) {
-                        Text(item.label)
-                          .fontSize(16)
-                          .fontWeight(FontWeight.Medium)
-                      }
+                      Text(item.label)
+                        .fontSize(16)
+                        .fontWeight(FontWeight.Medium)
+                        .layoutWeight(1)
+                        .maxLines(2)
+                        .textOverflow({ overflow: TextOverflow.Ellipsis })
                     }
                     .width('100%')
                     .height(80)
@@ -337,19 +424,28 @@ export struct ContentView {
                   .onClick(() => {
                     this.pageInfos.pushPath({ name: 'MarketSurveyView', param: index });
                   })
+                  .clickEffect({ level: ClickEffectLevel.LIGHT })
                 }
               }, (item: ShowListModel, index: number) => JSON.stringify(item) + index)
             }
             .width('100%')
             .layoutWeight(1)
             .listDirection(Axis.Vertical)
-            .lanes(2, 32)
+            .lanes(new WidthBreakpointType(1, 2, 2).getValue(this.windowUtil.mainWindowInfo.widthBp), 32)
             .contentEndOffset(24)
-            .padding({ left: this.isShowSidebar ? 32 : 32 + 140, right: this.isShowSidebar ? 32 : 32 + 140 })
-            .animation({ duration: 400, curve: Curve.EaseInOut })
           }
 
         }
+        .width('100%')
+        .padding({
+          left: this.isShowSidebar ?
+            new WidthBreakpointType(16, 16, 32).getValue(this.windowUtil.mainWindowInfo.widthBp) :
+            new WidthBreakpointType(16, 16, 32 + 140).getValue(this.windowUtil.mainWindowInfo.widthBp),
+          right: this.isShowSidebar ?
+            new WidthBreakpointType(16, 16, 32).getValue(this.windowUtil.mainWindowInfo.widthBp) :
+            new WidthBreakpointType(16, 16, 32 + 140).getValue(this.windowUtil.mainWindowInfo.widthBp)
+        })
+        .animation({ duration: 400, curve: Curve.EaseInOut })
       }
       .align(Alignment.Top)
       .scrollBar(BarState.Off)
@@ -357,7 +453,8 @@ export struct ContentView {
     }
     .bindSheet(this.isToolViewShow!!, DotSheetBindBuilder(), {
       showClose: false,
-      width: 460,
+      // width: new WidthBreakpointType('100%', '460vp', '460vp').getValue(this.windowUtil.mainWindowInfo.widthBp),
+      detents: this.windowUtil.mainWindowInfo.widthBp === WidthBreakpoint.WIDTH_SM ? ['900'] : ['90%'],
       height: '90%',
       preferType: SheetType.CENTER,
       onWillDismiss: (dismissSheetAction: DismissSheetAction) => {
@@ -380,7 +477,7 @@ export function ContentPanelBuilder() {
 }
 
 @ComponentV2
-export struct DotSheetBind{
+export struct DotSheetBind {
   // 创建导航器实例（子）
   @Consumer('toolInfo') toolInfos: NavPathStack = new NavPathStack();
   // 用于监听是否显示设置半模态（子）
@@ -403,10 +500,11 @@ export struct DotSheetBind{
           Button() {
             SymbolGlyph($r('sys.symbol.xmark'))
               .fontSize(24)
+              .fontColor([$r('sys.color.ohos_id_color_titlebar_icon')])
           }
           .width(40)
           .height(40)
-          .backgroundColor($r('sys.color.button_background_color_transparent'))
+          .backgroundColor($r('sys.color.ohos_id_color_button_normal'))
           .onClick(() => {
             this.isToolViewShow = false;
           })
@@ -427,6 +525,7 @@ export struct DotSheetBind{
                   Blank()
                   SymbolGlyph($r('sys.symbol.chevron_right'))
                     .fontSize(24)
+                    .fontColor([$r('sys.color.font_on_secondary')])
                 }
                 .width('100%')
                 .height(48)
@@ -446,16 +545,17 @@ export struct DotSheetBind{
                   }
                 })
                 .onClick(() => {
-                  this.toolInfos.pushPath({ name: 'ToolView', param: [item,index.toString()] as string[] });
+                  this.toolInfos.pushPath({ name: 'ToolView', param: [item, index.toString()] as string[] });
                   // this.toolInfos.pushPath({ name: 'ToolView' });
                 })
               }
-              .padding(2)
+              .padding(4)
+              .backgroundColor($r('sys.color.ohos_fa_list_card_bg'))
             })
           }
           .width('100%')
           // .backgroundColor(Color.Orange)
-          .borderRadius(16)
+          .borderRadius(15)
         }
         .padding({ left: 16, right: 16 })
       }
@@ -466,6 +566,6 @@ export struct DotSheetBind{
 }
 
 @Builder
-export function DotSheetBindBuilder(){
+export function DotSheetBindBuilder() {
   DotSheetBind();
 }

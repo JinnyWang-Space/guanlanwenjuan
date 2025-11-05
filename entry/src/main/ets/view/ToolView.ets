@@ -18,10 +18,10 @@ export struct ToolView {
   aboutView() {
     Column() {
       Image($r('app.media.startIcon'))
-        .width(56)
-        .height(56)
-        .borderRadius(12)
-        .margin({ bottom: 12 })
+        .width(64)
+        .height(64)
+        .borderRadius(15)
+        .margin({ top: 16, bottom: 12 })
       Text('观澜问卷')
         .fontSize(22)
         .fontWeight(FontWeight.Bold)
@@ -46,10 +46,11 @@ export struct ToolView {
           Button() {
             SymbolGlyph($r('sys.symbol.chevron_left'))
               .fontSize(24)
+              .fontColor([$r('sys.color.ohos_id_color_titlebar_icon')])
           }
           .width(40)
           .height(40)
-          .backgroundColor($r('sys.color.button_background_color_transparent'))
+          .backgroundColor($r('sys.color.ohos_id_color_button_normal'))
           .onClick(() => {
             this.toolInfos.pop();
           })
@@ -62,10 +63,11 @@ export struct ToolView {
           Button() {
             SymbolGlyph($r('sys.symbol.xmark'))
               .fontSize(24)
+              .fontColor([$r('sys.color.ohos_id_color_titlebar_icon')])
           }
           .width(40)
           .height(40)
-          .backgroundColor($r('sys.color.button_background_color_transparent'))
+          .backgroundColor($r('sys.color.ohos_id_color_button_normal'))
           .onClick(() => {
             this.isToolViewShow = false;
           })
@@ -73,7 +75,7 @@ export struct ToolView {
         .width('100%')
         .padding(16)
         .zIndex(1)
-        .backgroundBlurStyle(BlurStyle.BACKGROUND_THICK)
+        // .backgroundBlurStyle(BlurStyle.BACKGROUND_THICK)
 
         Scroll() {
           Column() {
@@ -91,6 +93,7 @@ export struct ToolView {
         .scrollBar(BarState.Off)
         .edgeEffect(EdgeEffect.Spring)
       }
+      .backgroundColor($r('sys.color.sheet_panel_background_color'))
     }
     .hideTitleBar(true)
     .hideBackButton(true)

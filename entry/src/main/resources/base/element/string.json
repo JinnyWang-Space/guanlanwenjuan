@@ -35,6 +35,30 @@
     {
       "name": "side_bar_survey_market",
       "value": "问卷模板"
+    },
+    {
+      "name": "EntryFormAbility_desc",
+      "value": "form_description"
+    },
+    {
+      "name": "EntryFormAbility_label",
+      "value": "form_label"
+    },
+    {
+      "name": "CreateSurvey_display_name",
+      "value": "创建问卷"
+    },
+    {
+      "name": "CreateSurveyCard_desc",
+      "value": "直达问卷创建页面，创建效率提升"
+    },
+    {
+      "name": "MarketSurvey_display_name",
+      "value": "问卷模板"
+    },
+    {
+      "name": "MarketSurveyCard_desc",
+      "value": "直达问卷模板页面，挑选您需要的问卷"
     }
   ]
 }

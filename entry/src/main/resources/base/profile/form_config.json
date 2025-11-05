@@ -1,0 +1,48 @@
+{
+  "forms": [
+    {
+      "name": "CreateSurveyCard",
+      "displayName": "$string:CreateSurvey_display_name",
+      "description": "$string:CreateSurveyCard_desc",
+      "src": "./ets/widget/pages/CreateSurveyCard.ets",
+      "uiSyntax": "arkts",
+      "window": {
+        "designWidth": 720,
+        "autoDesignWidth": true
+      },
+      "colorMode": "auto",
+      "dataProxyEnabled": true,
+      "isDynamic": true,
+      "isDefault": true,
+      "updateEnabled": false,
+      "scheduledUpdateTime": "10:30",
+      "updateDuration": 1,
+      "defaultDimension": "1*2",
+      "supportDimensions": [
+        "1*2"
+      ]
+    },
+    {
+      "name": "MarketSurveyCard",
+      "displayName": "$string:MarketSurvey_display_name",
+      "description": "$string:MarketSurveyCard_desc",
+      "src": "./ets/widget/pages/MarketSurveyCard.ets",
+      "uiSyntax": "arkts",
+      "window": {
+        "designWidth": 720,
+        "autoDesignWidth": true
+      },
+      "colorMode": "auto",
+      "dataProxyEnabled": true,
+      "isDynamic": true,
+      "isDefault": false,
+      "updateEnabled": false,
+      "scheduledUpdateTime": "10:30",
+      "updateDuration": 1,
+      "defaultDimension": "1*2",
+      "supportDimensions": [
+        "1*2"
+      ]
+    }
+  ]
+}

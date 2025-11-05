@@ -19,6 +19,11 @@
       "buildFunction": "MarketSurveyBuilder"
     },
     {
+      "name": "SearchView",
+      "pageSourceFile": "src/main/ets/view/SearchView.ets",
+      "buildFunction": "SearchBuilder"
+    },
+    {
       "name": "ToolView",
       "pageSourceFile": "src/main/ets/view/ToolView.ets",
       "buildFunction": "ToolBuilder"

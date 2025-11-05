@@ -1,0 +1,12 @@
+{
+  "color": [
+    {
+      "name": "list_on_color",
+      "value": "#FF607977"
+    },
+    {
+      "name": "list_on_foucs_color",
+      "value": "#FF4D605F"
+    }
+  ]
+}

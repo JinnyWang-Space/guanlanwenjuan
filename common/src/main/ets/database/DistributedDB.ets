@@ -9,6 +9,7 @@ export class DistributedDB {
   private rdbStore: relationalStore.RdbStore | undefined = undefined;
   context: common.UIAbilityContext | null = null;
 
+
   constructor(context: common.UIAbilityContext) {
     this.context = context;
   }
@@ -27,6 +28,7 @@ export class DistributedDB {
 
   // 新增数据
   async saveSurvey(survey: Survey): Promise<number> {
+
     if (!this.rdbStore) {
       Logger.info('[saveSurvey]', 'saveSurvey() has no callback!');
       return -1;

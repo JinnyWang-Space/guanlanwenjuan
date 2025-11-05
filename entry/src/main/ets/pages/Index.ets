@@ -1,5 +1,5 @@
 import { AppStorageV2, promptAction, window } from '@kit.ArkUI'
-import { DistributedDB, Survey, SurveyStatus, WindowUtil } from 'common';
+import { DistributedDB, FormInfo, Survey, SurveyStatus, WidthBreakpointType, WindowUtil } from 'common';
 import { HdsSideBar } from '@hms.hds.HdsSideBar';
 import { sideBarPanelBuilder } from '../view/SideBarView';
 import { ContentPanelBuilder } from '../view/ContentView';
@@ -16,6 +16,8 @@ let windowStage: window.WindowStage;
 @Entry
 @ComponentV2
 struct Index {
+  // 获取应用上下文
+  @Local context: common.UIAbilityContext = this.getUIContext().getHostContext() as common.UIAbilityContext;
   // 在 AppStorageV2中创建一个 key为 WindowUtil的键值对
   @Local windowUtil: WindowUtil =
     AppStorageV2.connect(WindowUtil, () => new WindowUtil(windowStage.getMainWindowSync()))!;
@@ -37,19 +39,50 @@ struct Index {
   @Provider('showList') showList: ShowListModel[] = [...this.showListVM];
   @Provider('surveys') surveys: Survey[] = [];
   private distributedDB: DistributedDB =
-    new DistributedDB(this.getUIContext().getHostContext() as common.UIAbilityContext);
+    new DistributedDB(this.context);
   // 用于监听是否刷新显示全部问卷列表
   @Provider('refresh') refresh: boolean = false;
+  @Local formInfo: FormInfo = AppStorageV2.connect(FormInfo, () => new FormInfo())!;
 
   async aboutToAppear(): Promise<void> {
     // 判断侧边栏是否显示
     this.getIsSideBar();
-    await this.distributedDB.setDistributedTables(this.getUIContext().getHostContext() as common.UIAbilityContext)
+    await this.distributedDB.setDistributedTables(this.context)
     this.surveys = await this.distributedDB.getAllSurveys();
     // 刷新侧边栏主列表
     this.getSBMainItem();
     // 刷新侧边栏主列表item的数量
     this.getSBMainItemNum();
+  }
+
+  onBackPress(): boolean | void {
+    if (this.windowUtil.mainWindowInfo.widthBp < WidthBreakpoint.WIDTH_LG) {
+      if (this.isShowSidebar) {
+        this.isShowSidebar = false;
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  onPageShow(): void {
+    if (this.formInfo.targetPage.trim().length !== 0) {
+      // promptAction.openToast({ message: JSON.stringify(this.formInfo.targetPage) })
+      if (this.formInfo.targetPage === 'CreateSurveyView') {
+        this.sideBarMainIndex = 0;
+      }
+      // 先清空栈，防止堆栈
+      this.pageInfos.pop();
+      // 入栈目标页面
+      this.pageInfos.pushPath({ name: this.formInfo.targetPage })
+      // 将卡片数据清空
+      this.formInfo.targetPage = '';
+    }
+    if (this.formInfo.targetSideBarMainIndex != -1) {
+      this.sideBarMainIndex = parseInt(this.formInfo.targetSideBarMainIndex.toString());
+      this.formInfo.targetSideBarMainIndex = -1;
+    }
   }
 
   // 实时监听是否刷新全部问卷列表
@@ -101,14 +134,22 @@ struct Index {
         // 侧边栏容器
         HdsSideBar({
           contentAreaMask: true,
-          isShowSideBar: this.isShowSidebar!!,
+          isShowSideBar: this.isShowSidebar,
+          $isShowSideBar: (isShowSideBar: boolean) => {
+            this.isShowSidebar = !isShowSideBar;
+          },
           minSideBarWidth: 280,
           sideBarColor: $r('sys.color.hds_sidebar_overlay'),
           sideBarPanelBuilder: (): void => this.sideBarBuilder(),
           contentPanelBuilder: (): void => this.contentBuilder(),
-          sideBarContainerType: this.getSideBarType()
+          sideBarContainerType: this.getSideBarType(),
+          onChange: (isShowSideBar: boolean) => {
+            this.isShowSidebar = isShowSideBar;
+            // promptAction.openToast({ message: JSON.stringify(this.isShowSidebar) })
+          }
         })
       }
+      .backgroundColor($r('sys.color.background_secondary'))
     }
     .hideTitleBar(true)
     .mode(NavigationMode.Stack)
@@ -116,7 +157,7 @@ struct Index {
 
   // 判断侧边栏是否显示
   private getIsSideBar(): void {
-    if (this.windowUtil.mainWindowInfo.widthBp < WidthBreakpoint.WIDTH_LG) {
+    if (this.getUIContext().getWindowWidthBreakpoint() < WidthBreakpoint.WIDTH_LG) {
       this.isShowSidebar = false;
     } else {
       this.isShowSidebar = true;

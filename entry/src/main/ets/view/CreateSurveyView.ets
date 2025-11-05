@@ -1,7 +1,7 @@
 import {
   AppStorageV2, promptAction, SymbolGlyphModifier, window
 } from "@kit.ArkUI";
-import { DistributedDB, Question, QuestionType, Survey, WindowUtil } from "common";
+import { DistributedDB, Question, QuestionType, Survey, SurveyStatus, WidthBreakpointType, WindowUtil } from "common";
 import { HdsNavDestination, HdsNavDestinationAttribute } from "@hms.hds.hdsBaseComponent";
 import { QuestionItem } from "../components/QuestionItem";
 import { common } from "@kit.AbilityKit";
@@ -68,6 +68,34 @@ export struct CreateSurveyView {
     new DistributedDB(this.getUIContext().getHostContext() as common.UIAbilityContext);
   // 用于监听是否刷新显示全部问卷列表
   @Consumer('refresh') refresh: boolean = false;
+  @Local selectedValue: number = 0;
+  @Local attributeShow: boolean =
+    new WidthBreakpointType(true, true, true).getValue(this.windowUtil.mainWindowInfo.widthBp);
+  @Local contentShow: boolean =
+    new WidthBreakpointType(false, true, true).getValue(this.windowUtil.mainWindowInfo.widthBp);
+  @Local attributeWidth: string = '100%';
+  @Local contentWidth: string = '100%';
+
+  // 划出组件 —— 当前用于删除问题
+  @Builder
+  itemEnd(questionIndex: number) {
+    Row({ space: 16 }) {
+      Button() {
+        SymbolGlyph($r('sys.symbol.trash_fill'))
+          .fontSize(24)
+          .fontColor([Color.White])
+      }
+      .width(40)
+      .height(40)
+      .backgroundColor(Color.Red)
+      .onClick(() => {
+        this.survey.questions.splice(questionIndex, 1);
+      })
+    }
+    .alignItems(VerticalAlign.Center)
+    .height('100%')
+    .margin({ left: 24 })
+  }
 
   async aboutToAppear(): Promise<void> {
     await this.distributedDB.setDistributedTables(this.getUIContext().getHostContext() as common.UIAbilityContext);
@@ -101,9 +129,23 @@ export struct CreateSurveyView {
         // 标题栏
         Column() {
           Row({ space: 12 }) {
+            Button() {
+              SymbolGlyph($r('sys.symbol.chevron_left'))
+                .fontSize(24)
+                .fontColor([$r('sys.color.ohos_id_color_titlebar_icon')])
+            }
+            .width(40)
+            .height(40)
+            .backgroundColor($r('sys.color.ohos_id_color_button_normal'))
+            .onClick(() => {
+              this.pageInfos.pop();
+            })
+
             Row({ space: 2 }) {
               if (this.isWriteTitle) {
                 TextInput({ placeholder: '请输入问卷名称', text: this.surveyTitle!! })
+                  .layoutWeight(1)
+                  // .maxLines(1)
               }
               if (!this.isWriteTitle) {
                 Text(`请输入问卷名称`)
@@ -117,14 +159,15 @@ export struct CreateSurveyView {
                   .fontColor([Color.Gray])
               }
             }
-            .width('30%')
-            .justifyContent(FlexAlign.Center)
+            .layoutWeight(1)
+
+            // Blank()
           }
           .height(40)
           .width('100%')
           .justifyContent(FlexAlign.Center)
 
-          Divider().strokeWidth(0.5).color(Color.Gray).margin({ top: 4 })
+          Divider().width('100%').strokeWidth(0.5).color(Color.Gray).margin({ top: 4 })
 
           Row({ space: 12 }) {
             Button() {
@@ -146,30 +189,109 @@ export struct CreateSurveyView {
           .height(40)
           .justifyContent(FlexAlign.Center)
 
-          Divider().strokeWidth(0.5).color(Color.Gray)
         }
         .width('100%')
-        .height(this.getUIContext().px2vp(this.windowUtil.mainWindowInfo.AvoidSystem?.topRect.height) + 56 + 30)
+        .height(this.getUIContext().px2vp(this.windowUtil.mainWindowInfo.AvoidSystem?.topRect.height) + 56 + 38)
         .justifyContent(FlexAlign.Start)
         .padding({
-          top: this.getUIContext().px2vp(this.windowUtil.mainWindowInfo.AvoidSystem?.topRect.height),
+          top: this.getUIContext().px2vp(this.windowUtil.mainWindowInfo.AvoidSystem?.topRect.height) + 8,
           left: 16, right: 16
         })
         .zIndex(1)
-        // .backgroundColor($r('sys.color.background_tertiary'))
-        // .backgroundBlurStyle(this.isTitleBlur ? BlurStyle.BACKGROUND_THICK : BlurStyle.NONE)
         .backgroundBlurStyle(BlurStyle.BACKGROUND_THICK)
 
-        Column() {
-          Row() {
+        // 主体区域
+        Row() {
+          // 左区域
+          if (this.attributeShow || this.windowUtil.mainWindowInfo.widthBp > WidthBreakpoint.WIDTH_SM) {
             Column() {
               Scroll() {
                 Column() {
+                  // 顶部填充区域
                   Blank()
                     .height(this.getUIContext().px2vp(this.windowUtil.mainWindowInfo.AvoidSystem?.topRect.height) +
                       56 + 38)
 
-                  Text(`text: ${this.surveyTitle}`)
+                  // 问卷描述
+                  Column() {
+                    Text('问卷描述')
+                      .fontSize(20)
+                      .fontWeight(FontWeight.Bold)
+                    TextArea({ placeholder: '请输入您的问卷描述', text: this.survey.description!! })
+                      .fontSize(18)
+                      .lineHeight(24)
+                      .letterSpacing(2)
+                      .margin({ top: 16, bottom: 16 })
+                  }
+                  .width('100%')
+                  .backgroundColor($r('sys.color.comp_background_primary'))
+                  .borderRadius(20)
+                  .padding(16)
+                  .margin({ bottom: 24 })
+                  .clickEffect({ level: ClickEffectLevel.LIGHT })
+
+                  // 问卷问题数量
+                  Column() {
+                    Text('问题数量')
+                      .fontSize(20)
+                      .fontWeight(FontWeight.Bold)
+                    Text(this.survey.questions.length.toString())
+                      .fontSize(24)
+                      .fontWeight(FontWeight.Bold)
+                      .fontStyle(FontStyle.Italic)
+                      .margin({ top: 24, bottom: 6 })
+                  }
+                  .width('100%')
+                  .backgroundColor($r('sys.color.comp_background_primary'))
+                  .borderRadius(20)
+                  .padding(16)
+                  .margin({ bottom: 24 })
+                  .clickEffect({ level: ClickEffectLevel.LIGHT })
+
+                  // 问卷状态
+                  Column() {
+                    Text('问卷状态')
+                      .fontSize(20)
+                      .fontWeight(FontWeight.Bold)
+
+                    Row() {
+                      ForEach(['立即发放', '暂不发放'], (item: string, index: number) => {
+                        Column({ space: 6 }) {
+                          Text(item)
+                            .fontSize(18)
+                          Radio({
+                            value: item,
+                            group: 'statusBox'
+                          })
+                            .checked(this.selectedValue === index)
+                            .onChange((isChecked: boolean) => {
+                              if (isChecked) {
+                                this.selectedValue = index;
+                                if (this.selectedValue === 0) {
+                                  this.survey.status = SurveyStatus.COLLECTING;
+                                  promptAction.openToast({ message: '正在发放' })
+                                } else {
+                                  this.survey.status = SurveyStatus.DRAFT;
+                                }
+                              }
+                            })
+                        }
+                        .layoutWeight(1)
+                      })
+                    }
+                    .width('100%')
+                    .margin({ top: 36, bottom: 16 })
+                  }
+                  .width('100%')
+                  .backgroundColor($r('sys.color.comp_background_primary'))
+                  .borderRadius(20)
+                  .padding(16)
+                  .margin({ bottom: 24 })
+                  .clickEffect({ level: ClickEffectLevel.LIGHT })
+
+                  // 底部填充区域
+                  Blank()
+                    .height(new WidthBreakpointType(80, 24, 24).getValue(this.windowUtil.mainWindowInfo.widthBp))
                 }
               }
               .layoutWeight(1)
@@ -177,34 +299,109 @@ export struct CreateSurveyView {
               .scrollBar(BarState.Off)
               .edgeEffect(EdgeEffect.Spring)
             }
-            .width('45%')
+            .width(new WidthBreakpointType(this.attributeShow ? '100%' : '0', '45%',
+              '45%').getValue(this.windowUtil.mainWindowInfo.widthBp))
+            .padding({
+              left: new WidthBreakpointType(16, 16, 64).getValue(this.windowUtil.mainWindowInfo.widthBp),
+              right: new WidthBreakpointType(16, 16, 64).getValue(this.windowUtil.mainWindowInfo.widthBp)
+            })
+          }
 
-            // 分割线
+          // 分割线
+          if (this.windowUtil.mainWindowInfo.widthBp > WidthBreakpoint.WIDTH_SM) {
             Row()
               .width(8)
               .height(100)
               .backgroundColor(Color.Gray)
               .borderRadius(20)
-
-            Column() {
-              AddQuestionView();
-            }
-            .width('55%')
-
           }
-          .width('100%')
-          .layoutWeight(1)
+
+          // 右区域
+          if (this.contentShow || this.windowUtil.mainWindowInfo.widthBp > WidthBreakpoint.WIDTH_SM) {
+            Column() {
+              // 问题列表
+              List({ space: 24, scroller: this.qScroller }) {
+                ForEach(this.survey.questions, (question: Question, index: number) => {
+                  ListItem() {
+                    QuestionItem({
+                      question: question,
+                      questionIndex: index,
+                    })
+                  }
+                  .swipeAction({
+                    end: {
+                      builder: () => {
+                        this.itemEnd(index);
+                      }
+                    }
+                  })
+                }, (question: Question, index: number) => JSON.stringify(question) + index)
+                  .onMove((from: number, to: number) => {
+                    let tmp = this.survey.questions.splice(from, 1);
+                    this.survey.questions.splice(to, 0, tmp[0]);
+                  })
+              }
+              .width('100%')
+              .layoutWeight(1)
+              .contentStartOffset(this.getUIContext()
+                .px2vp(this.windowUtil.mainWindowInfo.AvoidSystem?.topRect.height) +
+                56 + 40)
+              .contentEndOffset(new WidthBreakpointType(80, 24, 24).getValue(this.windowUtil.mainWindowInfo.widthBp))
+              .edgeEffect(EdgeEffect.Spring)
+              .scrollBar(BarState.Off)
+              .padding({
+                left: new WidthBreakpointType(16, 16, 96).getValue(this.windowUtil.mainWindowInfo.widthBp),
+                right: new WidthBreakpointType(16, 16, 96).getValue(this.windowUtil.mainWindowInfo.widthBp)
+              })
+            }
+            .width(new WidthBreakpointType(this.contentShow ? '100%' : '0', '55%',
+              '55%').getValue(this.windowUtil.mainWindowInfo.widthBp))
+          }
         }
         .width('100%')
         .layoutWeight(1)
 
-        // Scroll() {
-        //
-        // }
-        // .align(Alignment.Top)
-        // .scrollBar(BarState.Off)
-        // .edgeEffect(EdgeEffect.Spring)
+        // 属性/内容 按钮
+        if (this.windowUtil.mainWindowInfo.widthBp === WidthBreakpoint.WIDTH_SM) {
+          Row({ space: 12 }) {
+            Button() {
+              Text('属性')
+            }
+            .backgroundColor(this.attributeShow ? $r('app.color.list_on_color') : $r('sys.color.button_background_color_transparent'))
+            .padding({
+              top: 8,
+              bottom: 8,
+              left: 24,
+              right: 24
+            })
+            .onClick(() => {
+              this.attributeShow = true;
+              this.contentShow = false;
+            })
+
+            Button() {
+              Text('内容')
+            }
+            .backgroundColor(!this.attributeShow ? $r('app.color.list_on_color') : $r('sys.color.button_background_color_transparent'))
+            .padding({
+              top: 8,
+              bottom: 8,
+              left: 24,
+              right: 24
+            })
+            .onClick(() => {
+              this.attributeShow = false;
+              this.contentShow = true;
+            })
+          }
+          .zIndex(1)
+          .position({
+            left: this.getUIContext().px2vp(this.windowUtil.mainWindowInfo.windowSize.width) / 2 - 86,
+            bottom: 36
+          })
+        }
       }
+      .backgroundColor($r('sys.color.background_secondary'))
     }
     .hideTitleBar(true)
     .hideBackButton(true)
@@ -324,9 +521,13 @@ export struct AddQuestionView {
         }
         .width('100%')
         .layoutWeight(1)
-        .alignListItem(ListItemAlign.Center)
         .contentEndOffset(24)
         .scrollBar(BarState.Off)
+        .backgroundColor(Color.Pink)
+        .padding({
+          left: new WidthBreakpointType(16, 16, 96).getValue(this.windowUtil.mainWindowInfo.widthBp),
+          right: new WidthBreakpointType(16, 16, 96).getValue(this.windowUtil.mainWindowInfo.widthBp)
+        })
       }
     }
     .width('100%')
@@ -340,23 +541,4 @@ export struct AddQuestionView {
   private deleteQuestion(questionIndex: number): void {
     this.survey.questions.splice(questionIndex, 1);
   }
-
-  // private async saveSurvey(): Promise<void> {
-  //   try {
-  //     if (this.surveyId !== undefined) {
-  //
-  //     } else {
-  //       console.error(JSON.stringify(this.survey));
-  //
-  //       const newId: number = await this.distributedDB.insertData(this.survey);
-  //       promptAction.showToast({ message: '保存成功！' });
-  //       // // this.survey = new Survey();
-  //       this.surveyId = undefined;
-  //
-  //     }
-  //   } catch (error) {
-  //     promptAction.showToast({ message: '保存失败' });
-  //     console.error('Save survey error:', JSON.stringify(error));
-  //   }
-  // }
 }

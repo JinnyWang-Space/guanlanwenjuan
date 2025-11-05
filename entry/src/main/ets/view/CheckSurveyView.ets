@@ -1,6 +1,6 @@
 import { HdsNavDestination, HdsNavDestinationAttribute } from "@hms.hds.hdsBaseComponent";
 import { AppStorageV2, promptAction, SymbolGlyphModifier, window } from "@kit.ArkUI";
-import { DistributedDB, Question, QuestionType, Survey, SurveyStatus, WindowUtil } from "common";
+import { DistributedDB, Question, QuestionType, Survey, SurveyStatus, WidthBreakpointType, WindowUtil } from "common";
 import { common } from "@kit.AbilityKit";
 import { QuestionItem } from "../components/QuestionItem";
 
@@ -14,6 +14,8 @@ export struct CheckSurveyView {
     AppStorageV2.connect(WindowUtil, () => new WindowUtil(windowStage.getMainWindowSync()))!;
   // 创建导航器实例（子）
   @Consumer('pageInfo') pageInfos: NavPathStack = new NavPathStack();
+  // 用于监听侧边栏当前所选item对应的索引值
+  @Consumer('sideBarMainIndex') sideBarMainIndex: number = 0;
   // 获取参数 —— 问卷 id
   private surveyId: number = this.pageInfos.getParamByName('CheckSurveyView')[0] as number;
   // 创建数据库实例
@@ -89,7 +91,15 @@ export struct CheckSurveyView {
     .margin({ left: 24 })
   }
 
+  @Local attributeShow: boolean =
+    new WidthBreakpointType(true, true, true).getValue(this.windowUtil.mainWindowInfo.widthBp);
+  @Local contentShow: boolean =
+    new WidthBreakpointType(false, true, true).getValue(this.windowUtil.mainWindowInfo.widthBp);
+  @Local attributeWidth: string = '100%';
+  @Local contentWidth: string = '100%';
+
   async aboutToAppear(): Promise<void> {
+
     await this.distributedDB.setDistributedTables(this.getUIContext().getHostContext() as common.UIAbilityContext);
     this.survey = await this.distributedDB.getSurveyById(this.surveyId);
 
@@ -130,18 +140,60 @@ export struct CheckSurveyView {
               Text(this.survey?.title)
                 .fontSize(20)
                 .fontWeight(FontWeight.Medium)
+                .maxLines(1)
+                .textOverflow({ overflow: TextOverflow.Ellipsis })
             }
           }
           .height(40)
           .width('100%')
           .justifyContent(FlexAlign.Center)
 
-          Divider().strokeWidth(0.5).color(Color.Gray).margin({ top: 4 })
+          Blank()
 
-          Row({ space: 24 }) {
-            ForEach(this.operationBox, (item: string, index: number) => {
-              if (index === 1) {
-                Row({ space: 8 }) {
+          Divider().strokeWidth(0.5).color(Color.Gray)
+            .margin({ top: new WidthBreakpointType(4, 4, 6).getValue(this.windowUtil.mainWindowInfo.widthBp) })
+
+          if (this.sideBarMainIndex !== 1 && this.sideBarMainIndex !== 4) {
+            Row({ space: 24 }) {
+              ForEach(this.operationBox, (item: string, index: number) => {
+                if (index === 1) {
+                  Row({ space: 8 }) {
+                    Button() {
+                      Text(item)
+                        .fontSize(this.operationIndex === index ? 18 : 16)
+                        .fontWeight(FontWeight.Medium)
+                    }
+                    .backgroundColor(this.operationIndex === index ? $r('app.color.list_on_color') :
+                      $r('sys.color.button_background_color_transparent'))
+                    .borderRadius(18)
+                    .padding({
+                      top: 4,
+                      bottom: 4,
+                      left: 16,
+                      right: 16
+                    })
+                    .onClick(() => {
+                      this.operationIndex = index;
+                    })
+
+                    if (this.operationIndex === 1) {
+                      Button() {
+                        SymbolGlyph($r('sys.symbol.doc_plaintext_and_pencil_fill'))
+                          .fontSize(24)
+                          .fontColor([Color.Gray])
+                      }
+                      .width(36)
+                      .height(36)
+                      .borderRadius(18)
+                      .backgroundColor(this.isAdd ? Color.Pink : $r('sys.color.ohos_id_color_background_transparent'))
+                      .onClick(() => {
+                        this.isAdd = true;
+                      })
+                      .bindMenu(this.createMenu)
+                    }
+
+                  }
+                } else {
                   Button() {
                     Text(item)
                       .fontSize(this.operationIndex === index ? 18 : 16)
@@ -159,52 +211,19 @@ export struct CheckSurveyView {
                   .onClick(() => {
                     this.operationIndex = index;
                   })
-
-                  if (this.operationIndex === 1) {
-                    Button() {
-                      SymbolGlyph($r('sys.symbol.doc_plaintext_and_pencil_fill'))
-                        .fontSize(24)
-                        .fontColor([Color.Gray])
-                    }
-                    .width(36)
-                    .height(36)
-                    .borderRadius(18)
-                    .backgroundColor(this.isAdd ? Color.Pink : $r('sys.color.ohos_id_color_background_transparent'))
-                    .onClick(() => {
-                      this.isAdd = true;
-                    })
-                    .bindMenu(this.createMenu)
-                  }
-
                 }
-              } else {
-                Button() {
-                  Text(item)
-                    .fontSize(this.operationIndex === index ? 18 : 16)
-                    .fontWeight(FontWeight.Medium)
-                }
-                .backgroundColor(this.operationIndex === index ? Color.Blue :
-                  $r('sys.color.button_background_color_transparent'))
-                .borderRadius(18)
-                .padding({
-                  top: 4,
-                  bottom: 4,
-                  left: 16,
-                  right: 16
-                })
-                .onClick(() => {
-                  this.operationIndex = index;
-                })
-              }
-            })
+              })
+            }
+            .width('100%')
+            .height(40)
+            .justifyContent(FlexAlign.Center)
           }
-          .width('100%')
-          .height(40)
-          .justifyContent(FlexAlign.Center)
-
         }
         .width('100%')
-        .height(this.getUIContext().px2vp(this.windowUtil.mainWindowInfo.AvoidSystem?.topRect.height) + 56 + 30)
+        .height(
+          this.sideBarMainIndex !== 1 && this.sideBarMainIndex !== 4 ?
+            this.getUIContext().px2vp(this.windowUtil.mainWindowInfo.AvoidSystem?.topRect.height) + 56 + 32 :
+            this.getUIContext().px2vp(this.windowUtil.mainWindowInfo.AvoidSystem?.topRect.height) + 56)
         .justifyContent(FlexAlign.Start)
         .padding({
           top: this.getUIContext().px2vp(this.windowUtil.mainWindowInfo.AvoidSystem?.topRect.height),
@@ -217,264 +236,277 @@ export struct CheckSurveyView {
         if (this.operationIndex < 2) {
           Row() {
             // 左区域
-            Column() {
-              Scroll() {
-                Column() {
-                  // 顶部填充区域
-                  Blank()
-                    .height(this.getUIContext().px2vp(this.windowUtil.mainWindowInfo.AvoidSystem?.topRect.height) +
-                      56 + 38)
-
-                  // 问卷描述
+            if (this.attributeShow || this.windowUtil.mainWindowInfo.widthBp > WidthBreakpoint.WIDTH_SM) {
+              Column() {
+                Scroll() {
                   Column() {
-                    Text('问卷描述')
-                      .fontSize(20)
-                      .fontWeight(FontWeight.Bold)
-                    if (this.operationIndex === 0) {
-                      Text(this.survey?.description)
-                        .fontSize(18)
-                        .lineHeight(24)
-                        .letterSpacing(2)
-                        .margin({ top: 16, bottom: 16 })
-                    } else {
-                      TextArea({ placeholder: '请输入您的问卷描述', text: this.survey!.description })
-                        .fontSize(18)
-                        .lineHeight(24)
-                        .letterSpacing(2)
-                        .margin({ top: 16, bottom: 16 })
-                    }
-                  }
-                  .width(480)
-                  .backgroundColor(Color.Gray)
-                  .borderRadius(20)
-                  .padding(16)
-                  .margin({ bottom: 24 })
-                  .clickEffect({ level: ClickEffectLevel.LIGHT })
+                    // 顶部填充区域
+                    Blank()
+                      .height(this.getUIContext().px2vp(this.windowUtil.mainWindowInfo.AvoidSystem?.topRect.height) +
+                        56 + 40)
 
-                  // 问卷问题数量
-                  Column() {
-                    Text('问题数量')
-                      .fontSize(20)
-                      .fontWeight(FontWeight.Bold)
-                    Text(this.survey?.questions.length.toString())
-                      .fontSize(24)
-                      .fontWeight(FontWeight.Bold)
-                      .fontStyle(FontStyle.Italic)
-                      .margin({ top: 24, bottom: 6 })
-                  }
-                  .width(480)
-                  .backgroundColor(Color.Gray)
-                  .borderRadius(20)
-                  .padding(16)
-                  .margin({ bottom: 24 })
-                  .clickEffect({ level: ClickEffectLevel.LIGHT })
-
-                  // 问卷状态
-                  Column() {
-                    Text('问卷状态')
-                      .fontSize(20)
-                      .fontWeight(FontWeight.Bold)
-
-                    Row() {
-                      ForEach(['立即发放', '暂不发放'], (item: string, index: number) => {
-                        Column({ space: 6 }) {
-                          Text(item)
-                            .fontSize(18)
-                          Radio({
-                            value: item,
-                            group: 'statusBox'
-                          })
-                            .checked(this.selectedValue === index)
-                            .onChange((isChecked: boolean) => {
-                              if (isChecked) {
-                                this.selectedValue = index;
-                                if (this.selectedValue === 0) {
-                                  this.survey!.status = SurveyStatus.COLLECTING;
-                                  promptAction.openToast({ message: '正在发放' })
-                                } else {
-                                  this.survey!.status = SurveyStatus.DRAFT;
-                                }
-                              }
-                            })
-                            .enabled(this.operationIndex === 0 ? false : true)
-                        }
-                        .layoutWeight(1)
-                      })
+                    // 问卷描述
+                    Column() {
+                      Text('问卷描述')
+                        .fontSize(20)
+                        .fontWeight(FontWeight.Bold)
+                      if (this.operationIndex === 0) {
+                        Text(this.survey?.description)
+                          .fontSize(18)
+                          .lineHeight(24)
+                          .letterSpacing(2)
+                          .margin({ top: 16, bottom: 16 })
+                      } else {
+                        TextArea({ placeholder: '请输入您的问卷描述', text: this.survey!.description!! })
+                          .fontSize(18)
+                          .lineHeight(24)
+                          .letterSpacing(2)
+                          .margin({ top: 16, bottom: 16 })
+                      }
                     }
                     .width('100%')
-                    .margin({ top: 36, bottom: 16 })
-                  }
-                  .width(480)
-                  .backgroundColor(Color.Gray)
-                  .borderRadius(20)
-                  .padding(16)
-                  .margin({ bottom: 24 })
-                  .clickEffect({ level: ClickEffectLevel.LIGHT })
+                    .backgroundColor($r('sys.color.comp_background_primary'))
+                    .borderRadius(20)
+                    .padding(16)
+                    .margin({ bottom: 24 })
+                    .clickEffect({ level: ClickEffectLevel.LIGHT })
 
-                }
-              }
-              .layoutWeight(1)
-              .align(Alignment.Top)
-              .scrollBar(BarState.Off)
-              .edgeEffect(EdgeEffect.Spring)
-            }
-            .width('45%')
-
-            // 分割线
-            Row()
-              .width(8)
-              .height(100)
-              .backgroundColor(Color.Gray)
-              .borderRadius(20)
-
-            // 右区域
-            Column() {
-              // 问题列表
-              List({ space: 24, scroller: this.qScroller }) {
-                ForEach(this.survey?.questions, (question: Question, questionIndex: number) => {
-                  ListItem() {
+                    // 问卷问题数量
                     Column() {
-                      // 类型 + 标题
-                      RelativeContainer() {
-                        Text(question.type)
-                          .fontSize(16)
-                          .fontWeight(FontWeight.Medium)
-                          .backgroundColor($r('sys.color.button_background_color_transparent'))
-                          .borderRadius(20)
-                          .padding({
-                            top: 4,
-                            bottom: 4,
-                            left: 16,
-                            right: 16
-                          })
-                          .alignRules({
-                            left: { anchor: '__container__', align: HorizontalAlign.Start },
-                            center: { anchor: '__container__', align: VerticalAlign.Center }
-                          })
-
-                        Text() {
-                          Span(`第`)
-                          Span(` ${1 + questionIndex} `).fontSize(22)
-                          Span(`题`)
-                        }
-                        .fontSize(18)
+                      Text('问题数量')
+                        .fontSize(20)
                         .fontWeight(FontWeight.Bold)
-                        .alignRules({
-                          middle: { anchor: '__container__', align: HorizontalAlign.Center },
-                          center: { anchor: '__container__', align: VerticalAlign.Center }
+                      Text(this.survey?.questions.length.toString())
+                        .fontSize(24)
+                        .fontWeight(FontWeight.Bold)
+                        .fontStyle(FontStyle.Italic)
+                        .margin({ top: 24, bottom: 6 })
+                    }
+                    .width('100%')
+                    .backgroundColor($r('sys.color.comp_background_primary'))
+                    .borderRadius(20)
+                    .padding(16)
+                    .margin({ bottom: 24 })
+                    .clickEffect({ level: ClickEffectLevel.LIGHT })
+
+                    // 问卷状态
+                    Column() {
+                      Text('问卷状态')
+                        .fontSize(20)
+                        .fontWeight(FontWeight.Bold)
+
+                      Row() {
+                        ForEach(['立即发放', '暂不发放'], (item: string, index: number) => {
+                          Column({ space: 6 }) {
+                            Text(item)
+                              .fontSize(18)
+                            Radio({
+                              value: item,
+                              group: 'statusBox'
+                            })
+                              .checked(this.selectedValue === index)
+                              .onChange((isChecked: boolean) => {
+                                if (isChecked) {
+                                  this.selectedValue = index;
+                                  if (this.selectedValue === 0) {
+                                    this.survey!.status = SurveyStatus.COLLECTING;
+                                    promptAction.openToast({ message: '正在发放' })
+                                  } else {
+                                    this.survey!.status = SurveyStatus.DRAFT;
+                                  }
+                                }
+                              })
+                              .enabled(this.operationIndex === 0 ? false : true)
+                          }
+                          .layoutWeight(1)
                         })
                       }
                       .width('100%')
-                      .height(34)
-
-                      // 问题
-                      if (this.operationIndex === 0) {
-                        Row() {
-                          Text(question.content)
-                            .fontSize(18)
-                            .fontWeight(FontWeight.Medium)
-                        }
-                        .width('100%')
-                        .borderRadius(20)
-                        .padding({ left: 16, right: 16 })
-                        .margin({ top: 16, bottom: 16 })
-                      }
-                      if (this.operationIndex === 1) {
-                        TextArea({ placeholder: '请输入您的问题', text: question.content!! })
-                          .margin({ top: 16, bottom: 16 })
-                      }
-
-                      // 选项
-                      List({ space: 8 }) {
-                        ForEach(question.options, (option: string, optionIndex: number) => {
-                          ListItem() {
-                            Row({ space: 8 }) {
-                              if (this.operationIndex === 0) {
-                                Checkbox({ name: `${question.type}_option_${1 + optionIndex}` })
-                                  .enabled(false)
-                                Text(option)
-                                  .fontSize(16)
-                                  .layoutWeight(1)
-                              }
-                              if (this.operationIndex === 1) {
-                                Text(`${String.fromCharCode(65 + optionIndex)} .`)
-                                  .margin({ left: 8 })
-                                TextArea({
-                                  placeholder: `请输入您选项 ${String.fromCharCode(65 + optionIndex)} 的问题`,
-                                  text: option
-                                })
-                                  .onChange((value: string) => {
-                                    // 只更新 UI ，用于嵌套数据的防抖
-                                    this.option = value;
-                                  })
-                                  .onBlur(() => {
-                                    // 失去焦点后，进行组件状态更新
-                                    this.survey!.questions[questionIndex].options[optionIndex] = this.option;
-                                  })
-                                  .layoutWeight(1)
-                              }
-
-                            }
-                            .width('100%')
-                            .padding({ left: 6, right: 6 })
-                          }
-                        }, (option: string, optionIndex: number) => option + optionIndex)
-                      }
-
-                      // 添加选项按钮
-                      if (this.operationIndex === 1) {
-                        Button() {
-                          Row({ space: 8 }) {
-                            SymbolGlyph(this.getTypeSymbol(question.type))
-                              .fontSize(24)
-                              .fontColor([Color.Gray])
-                            Text(`添加 ${question.type}`)
-                          }
-                        }
-                        .width('100%')
-                        .backgroundColor($r('sys.color.button_background_color_transparent'))
-                        .borderRadius(20)
-                        .padding({ top: 12, bottom: 12 })
-                        .margin({ top: 16 })
-                        .onClick(() => {
-                          this.survey!.questions[questionIndex].options.push('');
-                        })
-                        .clickEffect({ level: ClickEffectLevel.LIGHT })
-                      }
-
+                      .margin({ top: 36, bottom: 16 })
                     }
-                    .width(560)
-                    .backgroundColor(Color.Gray)
+                    .width('100%')
+                    .backgroundColor($r('sys.color.comp_background_primary'))
                     .borderRadius(20)
-                    .padding(12)
+                    .padding(16)
+                    .margin({ bottom: 24 })
                     .clickEffect({ level: ClickEffectLevel.LIGHT })
                   }
-                  .swipeAction({
-                    end: {
-                      builder: () => {
-                        this.operationIndex === 1 ? this.itemEnd(questionIndex) : () => {
-                        };
+                }
+                .layoutWeight(1)
+                .align(Alignment.Top)
+                .scrollBar(BarState.Off)
+                .edgeEffect(EdgeEffect.Spring)
+              }
+              .width(new WidthBreakpointType(this.attributeShow ? '100%' : '0', '45%',
+                '45%').getValue(this.windowUtil.mainWindowInfo.widthBp))
+              .padding({
+                left: new WidthBreakpointType(16, 16, 64).getValue(this.windowUtil.mainWindowInfo.widthBp),
+                right: new WidthBreakpointType(16, 16, 64).getValue(this.windowUtil.mainWindowInfo.widthBp)
+              })
+            }
+
+            // 分割线
+            if (this.windowUtil.mainWindowInfo.widthBp > WidthBreakpoint.WIDTH_SM) {
+              Row()
+                .width(8)
+                .height(100)
+                .backgroundColor(Color.Gray)
+                .borderRadius(20)
+            }
+
+            // 右区域
+            if (this.contentShow || this.windowUtil.mainWindowInfo.widthBp > WidthBreakpoint.WIDTH_SM) {
+              Column() {
+                // 问题列表
+                List({ space: 24, scroller: this.qScroller }) {
+                  ForEach(this.survey?.questions, (question: Question, questionIndex: number) => {
+                    ListItem() {
+                      Column() {
+                        // 类型 + 标题
+                        RelativeContainer() {
+                          Text(question.type)
+                            .fontSize(16)
+                            .fontWeight(FontWeight.Medium)
+                            .backgroundColor($r('sys.color.button_background_color_transparent'))
+                            .borderRadius(20)
+                            .padding({
+                              top: 4,
+                              bottom: 4,
+                              left: 16,
+                              right: 16
+                            })
+                            .alignRules({
+                              left: { anchor: '__container__', align: HorizontalAlign.Start },
+                              center: { anchor: '__container__', align: VerticalAlign.Center }
+                            })
+
+                          Text() {
+                            Span(`第`)
+                            Span(` ${1 + questionIndex} `).fontSize(22)
+                            Span(`题`)
+                          }
+                          .fontSize(18)
+                          .fontWeight(FontWeight.Bold)
+                          .alignRules({
+                            middle: { anchor: '__container__', align: HorizontalAlign.Center },
+                            center: { anchor: '__container__', align: VerticalAlign.Center }
+                          })
+                        }
+                        .width('100%')
+                        .height(34)
+
+                        // 问题
+                        if (this.operationIndex === 0) {
+                          Row() {
+                            Text(question.content)
+                              .fontSize(18)
+                              .fontWeight(FontWeight.Medium)
+                          }
+                          .width('100%')
+                          .borderRadius(20)
+                          .padding({ left: 16, right: 16 })
+                          .margin({ top: 16, bottom: 16 })
+                        }
+                        if (this.operationIndex === 1) {
+                          TextArea({ placeholder: '请输入您的问题', text: question.content!! })
+                            .margin({ top: 16, bottom: 16 })
+                        }
+
+                        // 选项
+                        List({ space: 8 }) {
+                          ForEach(question.options, (option: string, optionIndex: number) => {
+                            ListItem() {
+                              Row({ space: 8 }) {
+                                if (this.operationIndex === 0) {
+                                  Checkbox({ name: `${question.type}_option_${1 + optionIndex}` })
+                                    .enabled(false)
+                                  Text(option)
+                                    .fontSize(16)
+                                    .layoutWeight(1)
+                                }
+                                if (this.operationIndex === 1) {
+                                  Text(`${String.fromCharCode(65 + optionIndex)} .`)
+                                    .margin({ left: 8 })
+                                  TextArea({
+                                    placeholder: `请输入您选项 ${String.fromCharCode(65 + optionIndex)} 的问题`,
+                                    text: option
+                                  })
+                                    .onChange((value: string) => {
+                                      // 只更新 UI ，用于嵌套数据的防抖
+                                      this.option = value;
+                                    })
+                                    .onBlur(() => {
+                                      // 失去焦点后，进行组件状态更新
+                                      this.survey!.questions[questionIndex].options[optionIndex] = this.option;
+                                    })
+                                    .layoutWeight(1)
+                                }
+
+                              }
+                              .width('100%')
+                              .padding({ left: 6, right: 6 })
+                            }
+                          }, (option: string, optionIndex: number) => option + optionIndex)
+                        }
+
+                        // 添加选项按钮
+                        if (this.operationIndex === 1) {
+                          Button() {
+                            Row({ space: 8 }) {
+                              SymbolGlyph(this.getTypeSymbol(question.type))
+                                .fontSize(24)
+                                .fontColor([Color.Gray])
+                              Text(`添加 ${question.type}`)
+                            }
+                          }
+                          .width('100%')
+                          .backgroundColor($r('sys.color.button_background_color_transparent'))
+                          .borderRadius(20)
+                          .padding({ top: 12, bottom: 12 })
+                          .margin({ top: 16 })
+                          .onClick(() => {
+                            this.survey!.questions[questionIndex].options.push('');
+                          })
+                          .clickEffect({ level: ClickEffectLevel.LIGHT })
+                        }
+
                       }
+                      .width('100%')
+                      .backgroundColor($r('sys.color.comp_background_primary'))
+                      .borderRadius(20)
+                      .padding(12)
+                      .clickEffect({ level: ClickEffectLevel.LIGHT })
                     }
-                  })
-                }, (question: Question, index: number) => JSON.stringify(question) + index)
+                    .swipeAction({
+                      end: {
+                        builder: () => {
+                          this.operationIndex === 1 ? this.itemEnd(questionIndex) : () => {
+                          };
+                        }
+                      }
+                    })
+                  }, (question: Question, index: number) => JSON.stringify(question) + index)
                   // .onMove((from: number, to: number) => {
                   //   if (this.operationIndex === 1) {
                   //     let tmp = this.survey!.questions.splice(from, 1);
                   //     this.survey!.questions.splice(to, 0, tmp[0]);
                   //   }
                   // })
+                }
+                .width('100%')
+                .layoutWeight(1)
+                .contentStartOffset(this.getUIContext()
+                  .px2vp(this.windowUtil.mainWindowInfo.AvoidSystem?.topRect.height) + 56 + 40)
+                .contentEndOffset(new WidthBreakpointType(80, 24, 24).getValue(this.windowUtil.mainWindowInfo.widthBp))
+                .scrollBar(BarState.Off)
+                .padding({
+                  left: new WidthBreakpointType(16, 16, 96).getValue(this.windowUtil.mainWindowInfo.widthBp),
+                  right: new WidthBreakpointType(16, 16, 96).getValue(this.windowUtil.mainWindowInfo.widthBp)
+                })
               }
-              .width('100%')
-              .layoutWeight(1)
-              .alignListItem(ListItemAlign.Center)
-              .contentStartOffset(this.getUIContext()
-                .px2vp(this.windowUtil.mainWindowInfo.AvoidSystem?.topRect.height) +
-                56 + 40)
-              .contentEndOffset(24)
-              .scrollBar(BarState.Off)
+              .width(new WidthBreakpointType(this.contentShow ? '100%' : '0', '55%',
+                '55%').getValue(this.windowUtil.mainWindowInfo.widthBp))
             }
-            .width('55%')
           }
           .width('100%')
           .layoutWeight(1)
@@ -490,7 +522,49 @@ export struct CheckSurveyView {
 
           Text('数据统计')
         }
+
+        // 属性/内容 按钮
+        if (this.windowUtil.mainWindowInfo.widthBp === WidthBreakpoint.WIDTH_SM && this.operationIndex < 2) {
+          Row({ space: 12 }) {
+            Button() {
+              Text('属性')
+            }
+            .backgroundColor(this.attributeShow ? $r('app.color.list_on_color') : $r('sys.color.button_background_color_transparent'))
+            .padding({
+              top: 8,
+              bottom: 8,
+              left: 24,
+              right: 24
+            })
+            .onClick(() => {
+              this.attributeShow = true;
+              this.contentShow = false;
+            })
+
+            Button() {
+              Text('内容')
+            }
+            .backgroundColor(!this.attributeShow ? Color.Blue : $r('sys.color.button_background_color_transparent'))
+            .padding({
+              top: 8,
+              bottom: 8,
+              left: 24,
+              right: 24
+            })
+            .onClick(() => {
+              this.attributeShow = false;
+              this.contentShow = true;
+            })
+          }
+          .zIndex(1)
+          .position({
+            left: this.getUIContext().px2vp(this.windowUtil.mainWindowInfo.windowSize.width) / 2 - 86,
+            bottom: 36
+          })
+        }
+
       }
+      .width('100%')
     }
     .hideTitleBar(true)
     .hideBackButton(true)

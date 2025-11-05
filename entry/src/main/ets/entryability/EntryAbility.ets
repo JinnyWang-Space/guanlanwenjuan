@@ -1,21 +1,63 @@
 import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
-import { AppStorageV2, window } from '@kit.ArkUI';
-import { WindowUtil, ImmersiveType, DistributedDB } from 'common';
+import { AppStorageV2, window, promptAction } from '@kit.ArkUI';
+import { WindowUtil, ImmersiveType, FormInfo } from 'common';
 
 const DOMAIN = 0x0000;
 
 export default class EntryAbility extends UIAbility {
   // 窗口实例
   windowUtil?: WindowUtil;
+  // 创建卡片数据实例
+  formInfo: FormInfo = AppStorageV2.connect(FormInfo, () => new FormInfo())!;
 
+  // 冷启动
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     try {
       this.context.getApplicationContext().setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_NOT_SET);
     } catch (err) {
       hilog.error(DOMAIN, 'testTag', 'Failed to set colorMode. Cause: %{public}s', JSON.stringify(err));
     }
+
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onCreate');
+    // 获取router事件中传递的targetPage参数
+    if (want?.parameters?.params) {
+      // want.parameters.params对应postCardAction()中params内容
+      let params: Record<string, Object> = JSON.parse(want.parameters.params as string);
+      let targetPage = '';
+      if (params.targetPage !== undefined) {
+        targetPage = params.targetPage as string;
+      }
+      let targetSideBarMainIndex = -1;
+      if (params.targetSideBarMainIndex !== undefined) {
+        targetSideBarMainIndex = params.targetSideBarMainIndex as number;
+      }
+      this.formInfo.targetPage = targetPage;
+      this.formInfo.targetSideBarMainIndex = targetSideBarMainIndex;
+      hilog.info(DOMAIN, 'testTag', `onCreate selectPage: ${targetPage},${targetSideBarMainIndex}`);
+    }
+  }
+
+  // 热启动
+  onNewWant(want: Want, launchParam: AbilityConstant.LaunchParam): void {
+    hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onNewWant');
+
+    // 获取router事件中传递的targetPage参数
+    if (want?.parameters?.params) {
+      // want.parameters.params对应postCardAction()中params内容
+      let params: Record<string | number, Object> = JSON.parse(want.parameters.params as string);
+      let targetPage = '';
+      if (params.targetPage !== undefined) {
+        targetPage = params.targetPage as string;
+      }
+      let targetSideBarMainIndex = -1;
+      if (params.targetSideBarMainIndex !== undefined) {
+        targetSideBarMainIndex = params.targetSideBarMainIndex as number;
+      }
+      this.formInfo.targetPage = targetPage;
+      this.formInfo.targetSideBarMainIndex = targetSideBarMainIndex;
+      hilog.info(DOMAIN, 'testTag', `onCreate selectPage: ${targetPage},${targetSideBarMainIndex}`);
+    }
   }
 
   onDestroy(): void {
@@ -34,7 +76,6 @@ export default class EntryAbility extends UIAbility {
         return;
       }
       hilog.info(DOMAIN, 'testTag', 'Succeeded in loading the content.');
-
 
       this.windowUtil!.setUIContext();
       this.windowUtil!.setImmersiveType(ImmersiveType.IMMERSIVE);

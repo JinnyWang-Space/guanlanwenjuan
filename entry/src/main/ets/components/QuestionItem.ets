@@ -144,15 +144,10 @@ export struct QuestionItem {
       .clickEffect({ level: ClickEffectLevel.LIGHT })
 
     }
-    .width(480)
-    .backgroundColor(Color.Gray)
+    .width('100%')
+    .backgroundColor($r('sys.color.comp_background_primary'))
     .borderRadius(20)
-    .padding({
-      top: 12,
-      bottom: 12,
-      left: 12,
-      right: 12
-    })
+    .padding(12)
     .clickEffect({ level: ClickEffectLevel.LIGHT })
   }
 
