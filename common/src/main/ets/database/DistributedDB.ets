@@ -4,11 +4,12 @@ import Logger from '../utils/Logger';
 import { RdbConstants } from '../constants/RdbConstants';
 import { Question, QuestionType, Survey, SurveyStatus } from '../model/Survey';
 import { BusinessError } from '@kit.BasicServicesKit';
+import { distributedDeviceManager } from "@kit.DistributedServiceKit"
 
 export class DistributedDB {
   private rdbStore: relationalStore.RdbStore | undefined = undefined;
   context: common.UIAbilityContext | null = null;
-
+  localDeviceNetworkId: string = '';
 
   constructor(context: common.UIAbilityContext) {
     this.context = context;
@@ -20,14 +21,72 @@ export class DistributedDB {
       this.rdbStore = await relationalStore.getRdbStore(context, RdbConstants.STORE_CONFIG);
       await this.rdbStore.executeSql(RdbConstants.CREATE_SURVEY_TABLE);
       await this.rdbStore.executeSql(RdbConstants.CREATE_QUESTIONS_TABLE);
+      await this.rdbStore.setDistributedTables(['surveys', 'questions']);
       Logger.error('[DistributedDB.setDistributedTables]', '成功')
     } catch (error) {
       Logger.error('[DistributedDB.setDistributedTables]', `Code:${error.code}, message: ${error.message}`);
     }
   }
 
+  async subscribeDataChange(): Promise<void> {
+    if (!this.rdbStore) {
+      Logger.info('[saveSurvey]', 'saveSurvey() has no callback!');
+      return;
+    }
+    try {
+      this.rdbStore.on('dataChange', relationalStore.SubscribeType.SUBSCRIBE_TYPE_REMOTE, async (devices) => {
+        Logger.info('[subscribeDataChange]', 'dataChange devices ' + devices);
+        for (let i = 0; i < devices.length; i++) {
+          let device = devices[i];
+          Logger.info('[subscribeDataChange]', `The data of device:${device} has been changed.`);
+          const result = await this.remoteQuery(device);
+          this.context?.eventHub.emit('dataChange', JSON.stringify(result));
+        }
+      });
+    } catch (err) {
+      Logger.info('[subscribeDataChange]',
+        `Failed to register observer. Code:${err.code},message:${err.message}`);
+    }
+  }
+
+  getLocalDeviceNetworkId() {
+    try {
+      const deviceManager = distributedDeviceManager.createDeviceManager('com.example.crossDeviceDataSynchronization');
+      if (deviceManager != null) {
+        this.localDeviceNetworkId = deviceManager.getLocalDeviceNetworkId();
+        Logger.info('[getLocalDeviceNetworkId]',
+          'local device networkId: ' + JSON.stringify(this.localDeviceNetworkId));
+      }
+    } catch (err) {
+      Logger.error('[getLocalDeviceNetworkId]',
+        `Failed to insert data. Code:${err.code}, message:${err.message}`);
+    }
+  }
+
+  getDeviceList(): string[] {
+    let deviceManager: distributedDeviceManager.DeviceManager;
+    let deviceIds: string[] = [];
+    try {
+      // create deviceManager.
+      deviceManager = distributedDeviceManager.createDeviceManager('com.example.crossDeviceDataSynchronization');
+      // DeviceIds is obtained by calling the getAvailableDeviceListSync method by the DeviceManager.
+      if (deviceManager != null) {
+        let devices = deviceManager.getAvailableDeviceListSync();
+        Logger.info('[getDeviceList]', 'devices size ' + devices.length);
+        for (let i = 0; i < devices.length; i++) {
+          deviceIds[i] = devices[i].networkId as string;
+          Logger.info('[getDeviceList]', 'devices size ' + deviceIds[i]);
+        }
+      }
+    } catch (err) {
+      Logger.error('[getDeviceList]',
+        `Failed to insert data. Code:${err.code}, message:${err.message}`);
+    }
+    return deviceIds;
+  }
+
   // 新增数据
-  async saveSurvey(survey: Survey): Promise<number> {
+  async saveSurvey(survey: Survey, isSync = true): Promise<number> {
 
     if (!this.rdbStore) {
       Logger.info('[saveSurvey]', 'saveSurvey() has no callback!');
@@ -45,6 +104,10 @@ export class DistributedDB {
         'deleted': survey.deleted ? 1 : 0
       };
       const surveyId: number = await this.rdbStore.insert('surveys', insertData);
+
+      if (isSync) {
+        await this.syncData();
+      }
 
       for (let i = 0; i < survey.questions.length; i++) {
         const question = survey.questions[i];
@@ -163,7 +226,7 @@ export class DistributedDB {
   }
 
   // 根据 id 删除问卷
-  async deleteSurvey(surveyId: number, permanent: boolean = false): Promise<boolean> {
+  async deleteSurvey(surveyId: number, permanent: boolean = false, isSync = true): Promise<boolean> {
     if (!this.rdbStore) {
       Logger.info('[deleteSurvey]', 'deleteSurvey() has no callback!');
       return false;
@@ -178,6 +241,9 @@ export class DistributedDB {
         const surveyPredicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates('surveys');
         surveyPredicates.equalTo('id', surveyId);
         const deletedRows = await this.rdbStore.delete(surveyPredicates);
+        if (isSync) {
+          await this.syncData();
+        }
         return deletedRows > 0;
       }
       // 软删除 —— 移到废纸篓
@@ -188,6 +254,9 @@ export class DistributedDB {
         const predicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates('surveys');
         predicates.equalTo('id', surveyId);
         const updatedRows: number = await this.rdbStore.update(valueBucket, predicates);
+        if (isSync) {
+          await this.syncData();
+        }
         return updatedRows > 0;
       }
     } catch (error) {
@@ -198,7 +267,7 @@ export class DistributedDB {
   }
 
   // 根据 id 恢复在废纸篓中的问卷
-  async restoreSurvey(surveyId: number): Promise<boolean> {
+  async restoreSurvey(surveyId: number, isSync = true): Promise<boolean> {
     if (!this.rdbStore) {
       Logger.info('[restoreSurvey]', 'restoreSurvey() has no callback!');
       return false;
@@ -211,6 +280,9 @@ export class DistributedDB {
       const predicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates('surveys');
       predicates.equalTo('id', surveyId);
       const updatedRows: number = await this.rdbStore.update(valueBucket, predicates);
+      if (isSync) {
+        await this.syncData();
+      }
       return updatedRows > 0;
     } catch (error) {
       Logger.error('Failed to restore survey:', JSON.stringify(error));
@@ -219,7 +291,7 @@ export class DistributedDB {
   }
 
   // 更新问卷
-  async updateSurvey(survey: Survey): Promise<boolean> {
+  async updateSurvey(survey: Survey, isSync = true): Promise<boolean> {
     if (!this.rdbStore) {
       Logger.info('[restoreSurvey]', 'restoreSurvey() has no callback!');
       return false;
@@ -253,10 +325,83 @@ export class DistributedDB {
         };
         await this.rdbStore.insert('questions', questionBucket);
       }
+
+      if (isSync) {
+        await this.syncData();
+      }
+
       return true;
     } catch (error) {
       Logger.error('Failed to update survey:', JSON.stringify(error));
       return false;
+    }
+  }
+
+  async syncData(): Promise<void> {
+    if (!this.rdbStore) {
+      Logger.info('[restoreSurvey]', 'restoreSurvey() has no callback!');
+      return;
+    }
+
+    const deviceIds: string[] = this.getDeviceList();
+    if (deviceIds.length === 0) {
+      return;
+    }
+    try {
+      const predicates = new relationalStore.RdbPredicates('surveys');
+      predicates.inDevices(deviceIds);
+      const result = await this.rdbStore.sync(relationalStore.SyncMode.SYNC_MODE_PUSH, predicates);
+      for (let i = 0; i < result.length; i++) {
+        const deviceId = result[i][0];
+        const syncResult = result[i][1];
+        if (syncResult === 0) {
+          Logger.info('[syncData]', `device:${deviceId} sync success`);
+        } else {
+          Logger.error('[syncData]',
+            `device:${deviceId} sync failed, status:${syncResult}`);
+        }
+      }
+    } catch (err) {
+      Logger.error('[syncData]', 'Push data failed, code: ' + err.code + ', message: ' + err.message);
+    }
+  }
+
+  async remoteQuery(device: string) {
+    if (!this.rdbStore) {
+      Logger.info('[restoreSurvey]', 'restoreSurvey() has no callback!');
+      return false;
+    }
+    try {
+      const predicates: relationalStore.RdbPredicates =
+        new relationalStore.RdbPredicates('surveys');
+      const columns: string[] =
+        ['id', 'title', 'description', 'created_time', 'status', 'published_time', 'closed_time', 'deleted'];
+      const resultSet = await this.rdbStore.remoteQuery(device, 'surveys', predicates,
+        columns);
+
+      const surveys: Survey[] = [];
+      while (resultSet.goToNextRow()) {
+        const survey: Survey = new Survey();
+        survey.id = resultSet.getLong(resultSet.getColumnIndex('id'));
+        survey.title = resultSet.getString(resultSet.getColumnIndex('title'));
+        survey.description = resultSet.getString(resultSet.getColumnIndex('description'));
+        survey.createdTime = resultSet.getLong(resultSet.getColumnIndex('created_time'));
+        survey.status = resultSet.getString(resultSet.getColumnIndex('status')) as SurveyStatus;
+        survey.publishedTime = resultSet.getLong(resultSet.getColumnIndex('published_time'));
+        survey.closedTime = resultSet.getLong(resultSet.getColumnIndex('closed_time'));
+        survey.deleted = resultSet.getLong(resultSet.getColumnIndex('deleted')) === 1;
+        surveys.push(survey);
+      }
+      resultSet.close();
+
+      Logger.info('[remoteQuery]', 'Remote query success, row cout: ' + resultSet.rowCount);
+      Logger.info('[remoteQuery]',
+        `ResultSet column names: ${resultSet.columnNames}, column count: ${resultSet.columnCount}`);
+      return surveys;
+    } catch (err) {
+      Logger.error('[remoteQuery]',
+        'Remote query failed, code: ' + err.code + ', message: ' + err.message);
+      return [];
     }
   }
 }

@@ -54,9 +54,22 @@ export struct MarketSurveyView {
         // 标题栏
         Column() {
           Row({ space: 12 }) {
+            Button() {
+              SymbolGlyph($r('sys.symbol.chevron_left'))
+                .fontSize(24)
+                .fontColor([$r('sys.color.ohos_id_color_titlebar_icon')])
+            }
+            .width(40)
+            .height(40)
+            .backgroundColor($r('sys.color.ohos_id_color_button_normal'))
+            .onClick(() => {
+              this.pageInfos.pop();
+            })
+
             Text(this.survey?.title)
               .fontSize(20)
               .fontWeight(FontWeight.Medium)
+              .layoutWeight(1)
               .maxLines(1)
           }
           .height(40)
@@ -73,7 +86,8 @@ export struct MarketSurveyView {
               Button() {
                 Text('属性')
               }
-              .backgroundColor(this.attributeShow ? $r('app.color.list_on_color') : $r('sys.color.button_background_color_transparent'))
+              .backgroundColor(this.attributeShow ? $r('app.color.list_on_color') :
+                $r('sys.color.button_background_color_transparent'))
               .padding({
                 top: 8,
                 bottom: 8,
@@ -88,7 +102,7 @@ export struct MarketSurveyView {
               Button() {
                 Text('内容')
               }
-              .backgroundColor(!this.attributeShow ? Color.Blue : $r('sys.color.button_background_color_transparent'))
+              .backgroundColor(!this.attributeShow ? $r('app.color.list_on_color') : $r('sys.color.button_background_color_transparent'))
               .padding({
                 top: 8,
                 bottom: 8,
@@ -374,6 +388,7 @@ export struct MarketSurveyView {
           }
         })
       }
+      .backgroundColor($r('sys.color.background_secondary'))
     }
     .hideTitleBar(true)
     .hideBackButton(true)

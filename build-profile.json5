@@ -5,13 +5,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "C:\\Users\\10\\.ohos\\config\\default_guanlanwenjuan_iLPn9qPcg8ZxKjeuy3vOLuD3CLwc7ocBLKK7XLDHAEw=.cer",
-          "keyAlias": "debugKey",
-          "keyPassword": "0000001BC0832A6E4B625AED6DBAD382539E1A74CD260AB3AD121CC929EEBF35B627E44951FEE08E3D4FCA",
-          "profile": "C:\\Users\\10\\.ohos\\config\\default_guanlanwenjuan_iLPn9qPcg8ZxKjeuy3vOLuD3CLwc7ocBLKK7XLDHAEw=.p7b",
+          "storeFile": "D:/HarmonyOS NEXT/Key/guanlanwenjuan.p12",
+          "storePassword": "0000001D1A4F88BC6FCFA764861FCDB3DC316312F09661F05D7D060D3F2B7609B805A4AD214FCA76CD2CA22EC5",
+          "keyAlias": "guanlanwenjuan",
+          "keyPassword": "0000001DCDF486C48DA7425BAAD42FCC4CAA6306D923EB193B2F5183FB6A8FF3DB6DD803400433C785CE2D03F2",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\10\\.ohos\\config\\default_guanlanwenjuan_iLPn9qPcg8ZxKjeuy3vOLuD3CLwc7ocBLKK7XLDHAEw=.p12",
-          "storePassword": "0000001B76B4436BFC6EC8679ACF4F8F3130B0AAFA126A804D481A717E6C3F82EF73FBE6524FB3CC32639F"
+          "profile": "D:/HarmonyOS NEXT/Key/guanlanwenjuan_profileDebug.p7b",
+          "certpath": "D:/HarmonyOS NEXT/Key/guanlanwenjuan.cer"
         }
       }
     ],

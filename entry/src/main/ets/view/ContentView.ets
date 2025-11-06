@@ -246,6 +246,7 @@ export struct ContentView {
             Image(this.pixelMap).width(300).height(300).objectFit(ImageFit.Contain)
           }
 
+          // 侧边栏前 6 项
           if (this.sideBarMainIndex < 5) {
             List({ space: new WidthBreakpointType(16, 16, 32).getValue(this.windowUtil.mainWindowInfo.widthBp) }) {
               ForEach(this.showList, (item: ShowListModel, index: number) => {
@@ -275,7 +276,7 @@ export struct ContentView {
                         .width(48)
                         .height('100%')
                         .justifyContent(FlexAlign.Center)
-                        .backgroundColor(Color.Gray)
+                        .backgroundColor($r('sys.color.comp_background_tertiary'))
                         .borderRadius({
                           topLeft: 2,
                           bottomLeft: 2,
@@ -361,7 +362,9 @@ export struct ContentView {
             .listDirection(Axis.Vertical)
             .lanes(new WidthBreakpointType(1, 2, 2).getValue(this.windowUtil.mainWindowInfo.widthBp), 32)
             .contentEndOffset(24)
-          } else {
+          }
+          // 侧边栏第 6 项
+          else {
             List({ space: new WidthBreakpointType(16, 16, 32).getValue(this.windowUtil.mainWindowInfo.widthBp) }) {
               ForEach(this.marketList, (item: ShowListModel, index: number) => {
                 ListItem() {
@@ -375,7 +378,7 @@ export struct ContentView {
                       .width(48)
                       .height('100%')
                       .justifyContent(FlexAlign.Center)
-                      .backgroundColor(Color.Gray)
+                      .backgroundColor($r('sys.color.comp_background_tertiary'))
                       .borderRadius({
                         topLeft: 2,
                         bottomLeft: 2,

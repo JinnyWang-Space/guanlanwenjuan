@@ -145,7 +145,7 @@ export struct CreateSurveyView {
               if (this.isWriteTitle) {
                 TextInput({ placeholder: '请输入问卷名称', text: this.surveyTitle!! })
                   .layoutWeight(1)
-                  // .maxLines(1)
+                // .maxLines(1)
               }
               if (!this.isWriteTitle) {
                 Text(`请输入问卷名称`)
@@ -178,7 +178,8 @@ export struct CreateSurveyView {
             .width(36)
             .height(36)
             .borderRadius(18)
-            .backgroundColor(this.isAdd ? Color.Pink : $r('sys.color.ohos_id_color_background_transparent'))
+            .backgroundColor(this.isAdd ? $r('app.color.list_on_color') :
+              $r('sys.color.ohos_id_color_background_transparent'))
             .onClick(() => {
               this.isAdd = true;
             })
@@ -210,7 +211,7 @@ export struct CreateSurveyView {
                   // 顶部填充区域
                   Blank()
                     .height(this.getUIContext().px2vp(this.windowUtil.mainWindowInfo.AvoidSystem?.topRect.height) +
-                      56 + 38)
+                      56 + 44)
 
                   // 问卷描述
                   Column() {
@@ -345,7 +346,7 @@ export struct CreateSurveyView {
               .layoutWeight(1)
               .contentStartOffset(this.getUIContext()
                 .px2vp(this.windowUtil.mainWindowInfo.AvoidSystem?.topRect.height) +
-                56 + 40)
+                56 + 44)
               .contentEndOffset(new WidthBreakpointType(80, 24, 24).getValue(this.windowUtil.mainWindowInfo.widthBp))
               .edgeEffect(EdgeEffect.Spring)
               .scrollBar(BarState.Off)
@@ -367,7 +368,8 @@ export struct CreateSurveyView {
             Button() {
               Text('属性')
             }
-            .backgroundColor(this.attributeShow ? $r('app.color.list_on_color') : $r('sys.color.button_background_color_transparent'))
+            .backgroundColor(this.attributeShow ? $r('app.color.list_on_color') :
+              $r('sys.color.button_background_color_transparent'))
             .padding({
               top: 8,
               bottom: 8,
@@ -382,7 +384,8 @@ export struct CreateSurveyView {
             Button() {
               Text('内容')
             }
-            .backgroundColor(!this.attributeShow ? $r('app.color.list_on_color') : $r('sys.color.button_background_color_transparent'))
+            .backgroundColor(!this.attributeShow ? $r('app.color.list_on_color') :
+              $r('sys.color.button_background_color_transparent'))
             .padding({
               top: 8,
               bottom: 8,

@@ -16,6 +16,21 @@
     "installationFree": false,
     "pages": "$profile:main_pages",
     "routerMap": "$profile:router_map",
+    "metadata": [
+      {
+        "name": "client_id",
+        "value": "6917582747453131825"
+      }
+    ],
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.INTERNET"
+      },
+      {
+        "name": "ohos.permission.FILE_ACCESS_PERSIST",
+//        "reason": "用于华为账号配置文件读写"
+      }
+    ],
     "abilities": [
       {
         "name": "EntryAbility",

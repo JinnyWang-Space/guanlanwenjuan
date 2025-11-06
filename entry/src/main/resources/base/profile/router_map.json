@@ -1,6 +1,11 @@
 {
   "routerMap": [
     {
+      "name": "AgreementView",
+      "pageSourceFile": "src/main/ets/view/AgreementView.ets",
+      "buildFunction": "AgreementBuilder"
+    },
+    {
       "name": "CreateSurveyView",
       "pageSourceFile": "src/main/ets/view/CreateSurveyView.ets",
       "buildFunction": "CreateSurveyBuilder",
