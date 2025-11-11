@@ -17,6 +17,7 @@ export class Survey {
   closedTime?: number = undefined;
   // 是否删除
   deleted: boolean = false;
+  id_cloud:string=  '';
 }
 
 @ObservedV2
@@ -27,7 +28,7 @@ export class Question {
   // 问题
   content: string = '';
   // 选项
-  @Trace options: string[] = ['选项1', '选项2'];
+  @Trace options: string[] = [];
   // 是否必答
   required: boolean = false;
 
@@ -39,11 +40,6 @@ export class Question {
   private generateId(): string {
     return 'q_' + Date.now() + '_' + Math.floor(Math.random() * 10000).toString();
   }
-
-  private addOption(){
-    this.options.push('');
-  }
-
 }
 
 export enum QuestionType {
@@ -59,4 +55,23 @@ export enum SurveyStatus {
   DRAFT = 'draft', //未收集
   COLLECTING = 'collecting', // 正在收集
   CLOSED = 'closed' // 收集完成
+}
+
+@ObservedV2
+export class Submission {
+  id: string = '';
+  survey_id:string = '';
+}
+
+@ObservedV2
+export class Answer {
+  id: string = '';
+  // 提交表 id
+  submission_id: string = '';
+  // 问题 id
+  question_id: string = '';
+  // 选择题或文本
+  answer_value: string = '';
+  // 多选
+  answer_options: string[] = [];
 }

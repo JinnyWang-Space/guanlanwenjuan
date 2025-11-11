@@ -5,13 +5,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "storeFile": "D:/HarmonyOS NEXT/Key/guanlanwenjuan.p12",
-          "storePassword": "0000001D1A4F88BC6FCFA764861FCDB3DC316312F09661F05D7D060D3F2B7609B805A4AD214FCA76CD2CA22EC5",
-          "keyAlias": "guanlanwenjuan",
-          "keyPassword": "0000001DCDF486C48DA7425BAAD42FCC4CAA6306D923EB193B2F5183FB6A8FF3DB6DD803400433C785CE2D03F2",
+          "storeFile": "D:/HarmonyOS NEXT/Test/guanlanwenjuan/test.p12",
+          "storePassword": "0000001DEDAEEA37BE82865ABA2F563A7DB78D581DADC82A91C2E647D69907AA9E09E67564B088C88593FDD1D2",
+          "keyAlias": "test",
+          "keyPassword": "0000001D42B52760DC259921605AA1ADD20EFBA3D837B4F4CE0F1F7E95687592F200E13B00F06AE6121532E4A0",
           "signAlg": "SHA256withECDSA",
-          "profile": "D:/HarmonyOS NEXT/Key/guanlanwenjuan_profileDebug.p7b",
-          "certpath": "D:/HarmonyOS NEXT/Key/guanlanwenjuan.cer"
+          "profile": "D:/HarmonyOS NEXT/Test/guanlanwenjuan/guanlanwenjuan_testDebug.p7b",
+          "certpath": "D:/HarmonyOS NEXT/Test/guanlanwenjuan/guanlanwenjuan_test.cer"
         }
       }
     ],
@@ -51,14 +51,6 @@
           ]
         }
       ]
-    },
-    {
-      "name": "home",
-      "srcPath": "./features/home"
-    },
-    {
-      "name": "mine",
-      "srcPath": "./features/mine"
     },
     {
       "name": "common",

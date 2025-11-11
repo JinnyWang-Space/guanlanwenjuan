@@ -47,7 +47,7 @@ export struct SideMenu {
                 .height(45)
                 .onClick(() => {
                   this.changeIndex(index);
-                  if (this.windowUtil.mainWindowInfo.widthBp === WidthBreakpoint.WIDTH_SM) {
+                  if (this.windowUtil.mainWindowInfo.widthBp < WidthBreakpoint.WIDTH_LG) {
                     this.isShowSidebar = false;
                   }
                 })

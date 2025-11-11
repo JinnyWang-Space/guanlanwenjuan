@@ -2,12 +2,12 @@
   "routerMap": [
     {
       "name": "AgreementView",
-      "pageSourceFile": "src/main/ets/view/AgreementView.ets",
+      "pageSourceFile": "src/main/ets/views/AgreementView.ets",
       "buildFunction": "AgreementBuilder"
     },
     {
       "name": "CreateSurveyView",
-      "pageSourceFile": "src/main/ets/view/CreateSurveyView.ets",
+      "pageSourceFile": "src/main/ets/views/CreateSurveyView.ets",
       "buildFunction": "CreateSurveyBuilder",
       "data": {
         "description": "This is page for create questionnaire."
@@ -15,22 +15,27 @@
     },
     {
       "name": "CheckSurveyView",
-      "pageSourceFile": "src/main/ets/view/CheckSurveyView.ets",
+      "pageSourceFile": "src/main/ets/views/CheckSurveyView.ets",
       "buildFunction": "CheckSurveyBuilder"
     },
     {
+      "name": "WriteSurveyView",
+      "pageSourceFile": "src/main/ets/views/WriteSurveyView.ets",
+      "buildFunction": "WriteSurveyBuilder"
+    },
+    {
       "name": "MarketSurveyView",
-      "pageSourceFile": "src/main/ets/view/MarketSurveyView.ets",
+      "pageSourceFile": "src/main/ets/views/MarketSurveyView.ets",
       "buildFunction": "MarketSurveyBuilder"
     },
     {
       "name": "SearchView",
-      "pageSourceFile": "src/main/ets/view/SearchView.ets",
+      "pageSourceFile": "src/main/ets/views/SearchView.ets",
       "buildFunction": "SearchBuilder"
     },
     {
       "name": "ToolView",
-      "pageSourceFile": "src/main/ets/view/ToolView.ets",
+      "pageSourceFile": "src/main/ets/views/ToolView.ets",
       "buildFunction": "ToolBuilder"
     }
   ]

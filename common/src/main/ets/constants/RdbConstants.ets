@@ -15,7 +15,8 @@ export class RdbConstants {
       status TEXT NOT NULL,
       published_time INTEGER,
       closed_time INTEGER,
-      deleted INTEGER NOT NULL DEFAULT 0
+      deleted INTEGER NOT NULL DEFAULT 0,
+      id_cloud TEXT
     )
     `;
   static readonly CREATE_QUESTIONS_TABLE = `

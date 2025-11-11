@@ -6,9 +6,7 @@
   "author": "JinnyWang",
   "license": "",
   "dependencies": {
-    "common": "file:../common",
-    "home": "file:../features/home",
-    "mine": "file:../features/mine"
+    "common": "file:../common"
   }
 }
 

@@ -1,7 +1,9 @@
 import { AppStorageV2, PersistenceV2, promptAction, window } from '@kit.ArkUI'
 import {
   access,
+  AppTmpViewModel,
   AppViewModel,
+  checkPermissionGrant,
   createFile,
   DistributedDB,
   ExitWithHuaweiButton,
@@ -11,21 +13,23 @@ import {
   mkdir,
   readFile,
   readWriteFile,
+  reqPermissionsFormUser,
+  reqPermissionsFormUserAgain,
   Survey,
   SurveyStatus,
   WidthBreakpointType,
   WindowUtil
 } from 'common';
 import { HdsSideBar } from '@hms.hds.HdsSideBar';
-import { sideBarPanelBuilder } from '../view/SideBarView';
-import { ContentPanelBuilder } from '../view/ContentView';
+import { sideBarPanelBuilder } from '../views/SideBarView';
+import { ContentPanelBuilder } from '../views/ContentView';
 import { HdsNavigation, HdsNavigationAttribute } from '@hms.hds.hdsBaseComponent';
-import { common } from '@kit.AbilityKit';
+import { abilityAccessCtrl, common } from '@kit.AbilityKit';
 import { ShowListModel } from '../model/ShowListModel';
 import { ShowListViewModel } from '../viewmodel/ShowListViewModel';
 import { SideBarListModel } from '../model/SideBarListModel';
 import { SideBarListViewModel } from '../viewmodel/SideBarListViewModel';
-import { fileUri } from '@kit.CoreFileKit';
+import { connection } from '@kit.NetworkKit';
 
 // 创建窗口实例
 let windowStage: window.WindowStage;
@@ -39,11 +43,15 @@ PersistenceV2.notifyOnError((key: string, reason: string, msg: string) => {
 @Entry
 @ComponentV2
 struct Index {
+  private static netConnection: connection.NetConnection | undefined = undefined;
   // 获取应用上下文
   @Local context: common.UIAbilityContext = this.getUIContext().getHostContext() as common.UIAbilityContext;
   // 在 PersistenceV2 中创建一个 type 为 AppViewModel 的键值对
   @Local appBasicData: AppViewModel =
     PersistenceV2.globalConnect({ type: AppViewModel, defaultCreator: () => new AppViewModel() })!;
+  // 在 AppStorageV2 中创建一个 type 为 AppTmpViewModel 的键值对
+  @Local appTmpData: AppTmpViewModel =
+    AppStorageV2.connect(AppTmpViewModel, () => new AppTmpViewModel())!;
   // 在 AppStorageV2 中创建一个 key 为 WindowUtil 的键值对
   @Local windowUtil: WindowUtil =
     AppStorageV2.connect(WindowUtil, () => new WindowUtil(windowStage.getMainWindowSync()))!;
@@ -71,6 +79,11 @@ struct Index {
   @Local formInfo: FormInfo = AppStorageV2.connect(FormInfo, () => new FormInfo())!;
 
   async aboutToAppear(): Promise<void> {
+
+    if (Index.netConnection === undefined) {
+      this.initNetwork();
+    }
+    
     // 判断侧边栏是否显示
     this.getIsSideBar();
     await this.distributedDB.setDistributedTables(this.context)
@@ -84,6 +97,13 @@ struct Index {
       if (!isExist) {
         mkdir(this.context.filesDir, 'avatarDir');
       }
+    });
+  }
+
+  aboutToDisappear(): void {
+    // 取消监听
+    Index.netConnection?.unregister(() => {
+      console.error('connection unregister success');
     });
   }
 
@@ -197,11 +217,13 @@ struct Index {
           onWillDismiss: (dismissSheetAction: DismissSheetAction) => {
             // 三键，手势，esc返回
             if (dismissSheetAction.reason === DismissReason.PRESS_BACK) {
-              dismissSheetAction.dismiss();
+              // dismissSheetAction.dismiss();
+              this.context.terminateSelf();
             }
             // 关闭按钮返回
             if (dismissSheetAction.reason === DismissReason.CLOSE_BUTTON) {
-              dismissSheetAction.dismiss();
+              // dismissSheetAction.dismiss();
+              this.context.terminateSelf();
             }
           }
         })
@@ -210,6 +232,75 @@ struct Index {
     .hideTitleBar(true)
     .mode(NavigationMode.Stack)
     .backgroundColor($r('sys.color.background_secondary'))
+  }
+
+  // 一系列网络监听事件
+  private initNetwork(){
+    // 创建 NetConnection 对象
+    Index.netConnection = connection.createNetConnection();
+    // 注册监听
+    Index.netConnection.register(() => {
+      console.error('connection register success');
+    });
+
+    // 监听网络是否可用
+    Index.netConnection.on('netAvailable', (data) => {
+      console.error('NetJudge  netAvailable ');
+      this.appTmpData.isNetwork = this.judgeHasNet();
+
+    });
+
+    // 监听网络是否关闭
+    Index.netConnection.on('netUnavailable', () => {
+      console.error('NetJudge  netUnavailable ');
+      this.appTmpData.isNetwork = this.judgeHasNet();
+    });
+
+    // 监听网络变化
+    Index.netConnection.on('netCapabilitiesChange', (data: connection.NetCapabilityInfo) => {
+      console.error('NetJudge netCapabilitiesChange ');
+      this.appTmpData.isNetwork = this.judgeHasNet();
+    });
+
+    // 监听网络变化
+    Index.netConnection.on('netConnectionPropertiesChange', (data: connection.NetConnectionPropertyInfo) => {
+      this.appTmpData.isNetwork = this.judgeHasNet();
+    });
+
+    // 监听网络丢失
+    Index.netConnection.on('netLost', () => {
+      this.appTmpData.isNetwork = this.judgeHasNet();
+    });
+
+  }
+
+  // 获取网络是否开启，返回布尔值
+  judgeHasNet(): boolean {
+    try { // Get current network connection
+      let netHandle = connection.getDefaultNetSync();
+
+      // 0-100 Reserved connections for the system
+      if (!netHandle || netHandle.netId < 100) {
+        return false;
+      }
+
+      // Get the properties of the connection
+      let netCapability = connection.getNetCapabilitiesSync(netHandle);
+      let cap = netCapability.networkCap;
+      if (!cap) {
+        return false;
+      }
+
+      for (let em of cap) {
+        if (connection.NetCap.NET_CAPABILITY_VALIDATED === em) {
+          return true;
+        }
+      }
+    } catch (e) {
+      // let err = e as BusinessError;
+      console.info('get netInfo error ：' + JSON.stringify(e));
+    }
+    return false;
   }
 
   // 判断侧边栏是否显示
@@ -421,7 +512,7 @@ export struct LoginView {
                 .justifyContent(FlexAlign.Center)
 
                 Text() {
-                  Span('本应用提供问卷管理、跨端协同和分布式管理等服务，本应用需用户联网、登录华为账号、开启跨应用关联等功能以便为您提供更好的服务。我们将遵守')
+                  Span('本应用提供问卷创建、分发和统计等服务，本应用需用户联网、登录华为账号等功能以便为您提供更好的服务。我们将遵守')
                   Span('隐私声明').fontColor($r('app.color.list_on_color')).onClick(() => {
                     this.loginInfos.pushPath({ name: 'AgreementView', param: 0 })
                   })
@@ -563,6 +654,23 @@ export struct LoginView {
                 .backgroundColor($r('app.color.list_on_color'))
                 .onClick(() => {
                   this.appBasicData.isStart = true;
+
+                  // setTimeout(() => {
+                  //   if (this.appBasicData.isDistributedFirst) {
+                  //     checkPermissionGrant('ohos.permission.DISTRIBUTED_DATASYNC',
+                  //       (grantStatus: abilityAccessCtrl.GrantStatus) => {
+                  //
+                  //         if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
+                  //           reqPermissionsFormUser(['ohos.permission.DISTRIBUTED_DATASYNC'], this.context,
+                  //             (isDataSync: boolean) => {
+                  //               this.appBasicData.isDistributeDataSync = isDataSync;
+                  //             });
+                  //           this.appBasicData.isDistributedFirst = false;
+                  //         }
+                  //       })
+                  //   }
+                  // }, 500)
+
                 })
               }
               .width('100%')
@@ -571,7 +679,12 @@ export struct LoginView {
           }
           .width('100%')
           .layoutWeight(1)
-          .padding(16)
+          .padding({
+            top: 16,
+            bottom: new WidthBreakpointType(24, 24, 16).getValue(this.windowUtil.mainWindowInfo.widthBp),
+            left: 16,
+            right: 16
+          })
         })
       }
       .width('100%')
