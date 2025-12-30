@@ -1,18 +1,21 @@
 import { HdsNavDestination, HdsNavDestinationAttribute } from "@kit.UIDesignKit"
-import { AppStorageV2, promptAction, window } from "@kit.ArkUI";
+import { AppStorageV2, PersistenceV2, promptAction, window } from "@kit.ArkUI";
 import { common } from "@kit.AbilityKit";
 import {
   Answer,
   AnswerCloud,
+  AppAppearanceViewModel,
   AppTmpViewModel,
   QuestionCloud,
   SurveyCloud,
   SurveyDescription,
+  SurveyStatus,
   WidthBreakpointType,
   WindowUtil
 } from "common";
 import { cloudDatabase } from "@kit.CloudFoundationKit";
 import Logger from "common/src/main/ets/utils/Logger";
+import { uiEffect } from "@kit.ArkGraphics2D";
 
 // 创建窗口实例
 let windowStage: window.WindowStage;
@@ -27,6 +30,9 @@ export struct WriteSurvey {
   // 在 AppStorageV2 中创建一个 key 为 WindowUtil 的键值对
   @Local windowUtil: WindowUtil =
     AppStorageV2.connect(WindowUtil, () => new WindowUtil(windowStage.getMainWindowSync()))!;
+  // 在 PersistenceV2 中创建一个 type 为 AppAppearanceViewModel 的键值对
+  @Local appAppearanceData: AppAppearanceViewModel =
+    PersistenceV2.globalConnect({ type: AppAppearanceViewModel, defaultCreator: () => new AppAppearanceViewModel() })!;
   // 创建导航器实例（子）
   @Consumer('pageInfo') pageInfos: NavPathStack = new NavPathStack();
   // 获取参数 —— 问卷 id
@@ -43,6 +49,7 @@ export struct WriteSurvey {
   @Local options: string[] = [];
 
   async aboutToAppear(): Promise<void> {
+    promptAction.openToast({message:this.writeSurveyId})
     // 初始化存储区
     let databaseZone = cloudDatabase.zone('guanlanwenjuan');
     // 初始化查询
@@ -88,8 +95,9 @@ export struct WriteSurvey {
   build() {
     HdsNavDestination() {
       Stack({ alignContent: Alignment.TopStart }) {
+        Image(this.appAppearanceData.staticWallpaper)
         // 当前处于分发状态，可以填写
-        if (this.survey.status === 'collecting') {
+        if (this.survey.status === SurveyStatus.COLLECTING) {
           // 标题栏
           Column() {
             Row({ space: 12 }) {
@@ -174,7 +182,7 @@ export struct WriteSurvey {
             right: 16
           })
           .zIndex(1)
-          .backgroundBlurStyle(BlurStyle.BACKGROUND_THICK)
+          // .backgroundBlurStyle(BlurStyle.BACKGROUND_THICK)
 
           // 主体区域
           Row() {
@@ -191,7 +199,7 @@ export struct WriteSurvey {
 
                     // 问卷描述
                     Column() {
-                      Text('问卷描述')
+                      Text($r('app.string.survey_description_text'))
                         .fontSize(20)
                         .fontWeight(FontWeight.Bold)
                       Text(this.description)
@@ -201,7 +209,11 @@ export struct WriteSurvey {
                         .letterSpacing(2)
                     }
                     .width('100%')
-                    .backgroundColor($r('sys.color.comp_background_primary'))
+                    .backgroundColor(this.appAppearanceData.isComponentBlur ? '' :
+                      $r('sys.color.comp_background_primary'))
+                    .backgroundFilter(this.appAppearanceData.isComponentBlur ?
+                      uiEffect.createFilter().blur(this.appAppearanceData.componentBlur) :
+                      uiEffect.createFilter().blur(BlurStyle.NONE))
                     .borderRadius(20)
                     .padding(16)
                     .margin({ bottom: 24 })
@@ -209,7 +221,7 @@ export struct WriteSurvey {
 
                     // 问卷问题数量
                     Column() {
-                      Text('问题数量')
+                      Text($r('app.string.survey_count_text'))
                         .fontSize(20)
                         .fontWeight(FontWeight.Bold)
                       Text(this.questions.length.toString())
@@ -219,41 +231,17 @@ export struct WriteSurvey {
                         .margin({ top: 24, bottom: 6 })
                     }
                     .width('100%')
-                    .backgroundColor($r('sys.color.comp_background_primary'))
+                    .backgroundColor(this.appAppearanceData.isComponentBlur ? '' :
+                      $r('sys.color.comp_background_primary'))
+                    .backgroundFilter(this.appAppearanceData.isComponentBlur ?
+                      uiEffect.createFilter().blur(this.appAppearanceData.componentBlur) :
+                      uiEffect.createFilter().blur(BlurStyle.NONE))
                     .borderRadius(20)
                     .padding(16)
                     .margin({ bottom: 24 })
                     .clickEffect({ level: ClickEffectLevel.LIGHT })
 
                     // Text(JSON.stringify(this.answers))
-
-                    // 问卷状态
-                    // Column() {
-                    //   Text('问卷状态')
-                    //     .fontSize(20)
-                    //     .fontWeight(FontWeight.Bold)
-                    //
-                    //   Row() {
-                    //     ForEach(['立即发放', '暂不发放'], (item: string, index: number) => {
-                    //       Column({ space: 6 }) {
-                    //         Text(item)
-                    //           .fontSize(18)
-                    //         Checkbox()
-                    //           .select(index === 1 ? true : false)
-                    //           .enabled(false)
-                    //       }
-                    //       .layoutWeight(1)
-                    //     })
-                    //   }
-                    //   .width('100%')
-                    //   .margin({ top: 36, bottom: 16 })
-                    // }
-                    // .width('100%')
-                    // .backgroundColor($r('sys.color.comp_background_primary'))
-                    // .borderRadius(20)
-                    // .padding(16)
-                    // .margin({ bottom: 24 })
-                    // .clickEffect({ level: ClickEffectLevel.LIGHT })
 
                     // 底部填充区域
                     Blank()
@@ -407,7 +395,11 @@ export struct WriteSurvey {
 
                       }
                       .width('100%')
-                      .backgroundColor($r('sys.color.comp_background_primary'))
+                      .backgroundColor(this.appAppearanceData.isComponentBlur ? '' :
+                        $r('sys.color.comp_background_primary'))
+                      .backgroundFilter(this.appAppearanceData.isComponentBlur ?
+                        uiEffect.createFilter().blur(this.appAppearanceData.componentBlur) :
+                        uiEffect.createFilter().blur(BlurStyle.NONE))
                       .borderRadius(20)
                       .padding(12)
                       .clickEffect({ level: ClickEffectLevel.LIGHT })
@@ -475,9 +467,9 @@ export struct WriteSurvey {
                   answerCloud.answer_value = this.answers[i].answer_value;
                   answerCloud.answer_options = JSON.stringify(this.answers[i].answer_options);
                   let record = await databaseZone.upsert([answerCloud]);
-                  Logger.info('[question]', `Succeeded in upserting a answer, result: ${JSON.stringify(record)}`);
+                  Logger.info('[WriteSurveyView]', `Succeeded in upserting a answer, result: ${JSON.stringify(record)}`);
                 } catch (err) {
-                  Logger.error('[question]', `Failed to upsert a answer, code: ${err.code}, message: ${err.message}`);
+                  Logger.error('[WriteSurveyView]', `Failed to upsert a answer, code: ${err.code}, message: ${err.message}`);
                 }
               }
               this.pageInfos.pop();
@@ -487,8 +479,6 @@ export struct WriteSurvey {
             else {
               promptAction.openToast({ message: '请先连接网络', textColor: Color.Red })
             }
-
-
           })
         }
         // 当前处于非分发状态不可填写

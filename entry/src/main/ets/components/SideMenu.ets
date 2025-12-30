@@ -1,5 +1,5 @@
-import { AppStorageV2 } from '@kit.ArkUI'
-import { WindowUtil } from "common";
+import { AppStorageV2, PersistenceV2 } from '@kit.ArkUI'
+import { AppGeneralViewModel, StartVibrator, WindowUtil } from "common";
 import { SideBarListModel } from "../model/SideBarListModel"
 import window from "@ohos.window";
 
@@ -11,6 +11,9 @@ export struct SideMenu {
   // 在 AppStorageV2中创建一个 key为 WindowUtil的键值对
   @Local windowUtil: WindowUtil =
     AppStorageV2.connect(WindowUtil, () => new WindowUtil(windowStage.getMainWindowSync()))!;
+  // 在 PersistenceV2 中创建一个 type 为 AppGeneralViewModel 的键值对
+  @Local appGeneralData: AppGeneralViewModel =
+    PersistenceV2.globalConnect({ type: AppGeneralViewModel, defaultCreator: () => new AppGeneralViewModel() })!;
   // 接收父组件传来的侧边栏类型 —— 0-main, 1-sub
   @Param @Require type: number;
   // 接收父组件传来的列表数据
@@ -34,7 +37,8 @@ export struct SideMenu {
                   SymbolGlyph(item.symbol)
                     .fontSize(24)
                     .margin({ left: 6, right: 8 })
-                    .fontColor(this.selectedIndex === index ?[$r('sys.color.font_on_primary')]:[$r('sys.color.font_normal')])
+                    .fontColor(this.selectedIndex === index ? [$r('sys.color.font_on_primary')] :
+                      [$r('sys.color.font_normal')])
                   Text(item.label)
                     .fontSize(16)
                     .fontWeight(this.selectedIndex === index ? FontWeight.Bold : FontWeight.Medium)
@@ -46,6 +50,10 @@ export struct SideMenu {
                 .width('100%')
                 .height(45)
                 .onClick(() => {
+                  // 开启列表项震动
+                  if (this.appGeneralData.isHapticListItem) {
+                    StartVibrator()
+                  }
                   this.changeIndex(index);
                   if (this.windowUtil.mainWindowInfo.widthBp < WidthBreakpoint.WIDTH_LG) {
                     this.isShowSidebar = false;
@@ -56,11 +64,11 @@ export struct SideMenu {
                     .backgroundColor('')
                   },
                   pressed: {
-                    .backgroundColor(this.selectedIndex === index?$r('app.color.list_on_foucs_color'):Color.Gray)
+                    .backgroundColor(this.selectedIndex === index ? $r('app.color.list_on_foucs_color') : Color.Gray)
                     .borderRadius(12)
                   },
                   focused: {
-                    .backgroundColor(this.selectedIndex === index?$r('app.color.list_on_foucs_color'):Color.Gray)
+                    .backgroundColor(this.selectedIndex === index ? $r('app.color.list_on_foucs_color') : Color.Gray)
                     .borderRadius(12)
                   }
                 })
@@ -76,17 +84,20 @@ export struct SideMenu {
                   SymbolGlyph(item.symbol)
                     .fontSize(24)
                     .margin({ left: 6, right: 8 })
-                    .fontColor([Color.Gray])
+                    .fontColor(this.selectedIndex === index ?[$r('sys.color.font_on_primary')]:[$r('sys.color.font_normal')])
                   Text(item.label)
                     .fontSize(16)
                     .fontWeight(this.selectedIndex === index ? FontWeight.Bold : FontWeight.Medium)
-                  Blank()
                 }
                 .width('100%')
                 .height(45)
                 .onClick(() => {
+                  // 开启列表项震动
+                  if (this.appGeneralData.isHapticListItem) {
+                    StartVibrator()
+                  }
                   this.changeIndex(index);
-                  if (this.windowUtil.mainWindowInfo.widthBp === WidthBreakpoint.WIDTH_SM) {
+                  if (this.windowUtil.mainWindowInfo.widthBp < WidthBreakpoint.WIDTH_LG) {
                     this.isShowSidebar = false;
                   }
                 })
@@ -95,11 +106,11 @@ export struct SideMenu {
                     .backgroundColor('')
                   },
                   pressed: {
-                    .backgroundColor(this.selectedIndex === index?$r('app.color.list_on_foucs_color'):Color.Gray)
+                    .backgroundColor(this.selectedIndex === index ? $r('app.color.list_on_foucs_color') : Color.Gray)
                     .borderRadius(12)
                   },
                   focused: {
-                    .backgroundColor(this.selectedIndex === index?$r('app.color.list_on_foucs_color'):Color.Gray)
+                    .backgroundColor(this.selectedIndex === index ? $r('app.color.list_on_foucs_color') : Color.Gray)
                     .borderRadius(12)
                   }
                 })

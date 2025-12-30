@@ -20,10 +20,20 @@
     ],
     "requestPermissions": [
       {
-        "name": "ohos.permission.INTERNET"
+        "name": "ohos.permission.INTERNET",
+        "reason": "$string:permission_internet"
       },
       {
-        "name": "ohos.permission.GET_NETWORK_INFO"
+        "name": "ohos.permission.GET_NETWORK_INFO",
+        "reason": "$string:permission_get_network_info"
+      },
+      {
+        "name": "ohos.permission.VIBRATE",
+        "reason": "$string:permission_internet"
+      },
+      {
+        "name": "ohos.permission.DETECT_GESTURE",
+        "reason": "$string:permission_detect_gesture"
       }
     ],
     "abilities": [
@@ -36,13 +46,27 @@
         "startWindowIcon": "$media:startIcon",
         "startWindowBackground": "$color:start_window_background",
         "exported": true,
+        //启动应用接续能力
+        "continuable": true,
         "skills": [
           {
             "entities": [
               "entity.system.home"
             ],
             "actions": [
-              "ohos.want.action.home"
+              "ohos.want.action.home",
+              // 用于系统分享
+              "ohos.want.action.sendData"
+            ],
+            // 目标应用在配置支持接收的数据类型时，需穷举支持的UTD，比如：支持全部图片类型，可声明：general.image
+            // maxFileSupported 对于归属指定类型的文件，标识一次支持接收的最大数量。默认为 0，代表不支持此类文件的分享。
+            // 文件类型归属关系参考：@ohos.data.uniformTypeDescriptor (标准化数据定义与描述)
+            "uris": [
+              {
+                "scheme": "file",
+                "utd": "general.image",
+                "maxFileSupported": 1
+              }
             ]
           }
         ]

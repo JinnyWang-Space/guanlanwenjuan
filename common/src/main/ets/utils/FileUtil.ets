@@ -147,24 +147,31 @@ export function rmdir(path: string) {
  * 功能：删除文件
  * 参数 1：要删除的文件的路径
  */
-export function unlink(path: string) {
-  fs.unlink(path).then(() => {
+export async function unlink(path: string): Promise<boolean> {
+  let success: boolean = true;
+  try {
+    await fs.unlink(path);
     Logger.info('[FileUtils.unlink]', `remove file succeed, filePath: ${path}`);
-  }).catch((err: BusinessError) => {
+    return success;
+  } catch (err) {
     Logger.error('[FileUtils.unlink]',
       `remove file failed with error message: ${err.message}, error code: ${err.code}`);
-  });
+    return !success;
+  }
 }
 
-export function copyFile(srcPath: string, dstPath: string) {
+export function copyFile(srcPath: string, dstPath: string, callback: Function = () => {
+}) {
   fs.copyFile(srcPath, dstPath, 0).then(() => {
+    callback(dstPath);
     console.info("copy file succeed");
   }).catch((err: BusinessError) => {
     console.error("copy file failed with error message: " + err.message + ", error code: " + err.code);
   });
 }
 
-export function readFile(filePath: string,callback:Function=()=>{}) {
+export function readFile(filePath: string, callback: Function = () => {
+}) {
   let file = fs.openSync(filePath, fs.OpenMode.READ_WRITE);
   let arrayBuffer = new ArrayBuffer(4096);
   fs.read(file.fd, arrayBuffer).then((readLen: number) => {

@@ -1,0 +1,394 @@
+{
+  "string": [
+    {
+      "name": "page_show",
+      "value": "page from package"
+    },
+    {
+      "name": "settings_text",
+      "value": "Settings"
+    },
+    {
+      "name": "list_title_support_text",
+      "value": "Support"
+    },
+    {
+      "name": "list_item_feedback_text",
+      "value": "Feedback"
+    },
+    {
+      "name": "list_title_data_text",
+      "value": "Data"
+    },
+    {
+      "name": "list_item_account_text",
+      "value": "Account"
+    },
+    {
+      "name": "list_title_appearance_text",
+      "value": "Appearance"
+    },
+    {
+      "name": "list_item_wallpaper_text",
+      "value": "Wallpaper"
+    },
+    {
+      "name": "list_item_component_text",
+      "value": "Component"
+    },
+    {
+      "name": "list_item_show_hide_components_text",
+      "value": "Show/Hide Components"
+    },
+    {
+      "name": "list_item_holding_hand_text",
+      "value": "Smart Grip Detection"
+    },
+    {
+      "name": "list_title_general_text",
+      "value": "General"
+    },
+    {
+      "name": "list_item_language_text",
+      "value": "Language"
+    },
+    {
+      "name": "list_item_color_mode_text",
+      "value": "Color Mode"
+    },
+    {
+      "name": "list_item_sounds_notifications_text",
+      "value": "Sounds & Notifications"
+    },
+    {
+      "name": "list_title_guide_text",
+      "value": "Guide"
+    },
+    {
+      "name": "list_item_tips_text",
+      "value": "Tips"
+    },
+    {
+      "name": "list_item_changelog_text",
+      "value": "What's New"
+    },
+    {
+      "name": "list_title_about_us_text",
+      "value": "About us"
+    },
+    {
+      "name": "list_item_privacy_agreement_text",
+      "value": "Privacy Agreement"
+    },
+    {
+      "name": "list_item_user_agreement_text",
+      "value": "User Agreement"
+    },
+    {
+      "name": "list_item_about_text",
+      "value": "About"
+    },
+
+
+    {
+      "name": "category_text",
+      "value": "Category"
+    },
+    {
+      "name": "bug_text",
+      "value": "Bug"
+    },
+    {
+      "name": "suggestions_text",
+      "value": "Product Suggestions"
+    },
+    {
+      "name": "category_warning_text",
+      "value": "Select Feedback Type"
+    },
+    {
+      "name": "description_suggestions_text",
+      "value": "Description / Suggestion"
+    },
+    {
+      "name": "description_suggestions_placeholder_text",
+      "value": "Please describe the issue or suggestion in as much detail as possible.A minimum length of 20 characters is required."
+    },
+    {
+      "name": "description_suggestions_warning_text",
+      "value": "Enter at least 20 characters"
+    },
+    {
+      "name": "device_type_text",
+      "value": "Device Type"
+    },
+    {
+      "name": "device_phone_text",
+      "value": "Phone"
+    },
+    {
+      "name": "device_tablet_text",
+      "value": "Tablet"
+    },
+    {
+      "name": "device_warning_text",
+      "value": "Select Device Type"
+    },
+    {
+      "name": "device_type_placeholder_text",
+      "value": "Please enter your device model (e.g., Mate 80)"
+    },
+    {
+      "name": "device_content_warning_text",
+      "value": "This field is required"
+    },
+    {
+      "name": "contact_information_text",
+      "value": "Contact Information"
+    },
+    {
+      "name": "contact_information_placeholder_text",
+      "value": "Please provide your phone number or email so we can follow up on this issue."
+    },
+    {
+      "name": "contact_content_warning_text",
+      "value": "Please enter a valid phone number or email address"
+    },
+    {
+      "name": "submit_text",
+      "value": "Submit"
+    },
+    {
+      "name": "submit_status_sending_text",
+      "value": "Sending..."
+    },
+    {
+      "name": "submit_status_sent_text",
+      "value": "Sent"
+    },
+    {
+      "name": "submit_status_failed_text",
+      "value": "Send Failed"
+    },
+
+
+    {
+      "name": "list_account_huawei_id_text",
+      "value": "Huawei ID"
+    },
+    {
+      "name": "list_account_unknown_text",
+      "value": "Unknown"
+    },
+
+
+    {
+      "name": "list_appearance_preview_text",
+      "value": "Preview"
+    },
+    {
+      "name": "list_appearance_sidebar_text",
+      "value": "My Surveys"
+    },
+
+
+    {
+      "name": "list_wallpaper_static_text",
+      "value": "Static Wallpaper"
+    },
+    {
+      "name": "list_wallpaper_clear_text",
+      "value": "Clear Wallpaper"
+    },
+
+
+    {
+      "name": "list_component_create_survey_text",
+      "value": "Create Survey"
+    },
+    {
+      "name": "list_component_component_blur_text",
+      "value": "Component Blur"
+    },
+
+
+    {
+      "name": "list_shc_list_title_button_text",
+      "value": "Buttons"
+    },
+    {
+      "name": "list_shc_button_all_text",
+      "value": "All Buttons"
+    },
+    {
+      "name": "list_shc_button_sidebar_text",
+      "value": "Sidebar Button"
+    },
+    {
+      "name": "list_shc_button_search_text",
+      "value": "Search Button"
+    },
+    {
+      "name": "list_shc_button_scan_text",
+      "value": "Scan Button"
+    },
+    {
+      "name": "list_shc_haptic_settings_text",
+      "value": "Settings Button"
+    },
+
+
+    {
+      "name": "list_language_follow_system_text",
+      "value": "Follow System"
+    },
+    {
+      "name": "list_language_simplified_chinese_text",
+      "value": "Simplified Chinese"
+    },
+    {
+      "name": "list_language_english_text",
+      "value": "English"
+    },
+
+
+    {
+      "name": "list_color_mode_follow_system_text",
+      "value": "Follow System"
+    },
+    {
+      "name": "list_color_mode_light_text",
+      "value": "Light Mode"
+    },
+    {
+      "name": "list_color_mode_dark_text",
+      "value": "Dark Mode"
+    },
+
+
+    {
+      "name": "list_sn_list_title_haptic_text",
+      "value": "Haptic Feedback"
+    },
+    {
+      "name": "list_sn_haptic_all_text",
+      "value": "All Haptic"
+    },
+    {
+      "name": "list_sn_haptic_button_text",
+      "value": "Button Haptic"
+    },
+    {
+      "name": "list_sn_haptic_swipe_text",
+      "value": "Swipe Haptic"
+    },
+    {
+      "name": "list_sn_haptic_list_item_text",
+      "value": "List Item Haptic"
+    },
+    {
+      "name": "list_sn_haptic_menu_text",
+      "value": "Menu Haptic"
+    },
+
+
+    {
+      "name": "list_tips_list_title_gesture_text",
+      "value": "Gesture Controls"
+    },
+    {
+      "name": "list_tips_gesture_swipe_left_text",
+      "value": "Swipe Left Actions"
+    },
+    {
+      "name": "list_tips_gesture_swipe_right_text",
+      "value": "Swipe Right Actions"
+    },
+    {
+      "name": "list_tips_list_title_account_text",
+      "value": "Account Support"
+    },
+    {
+      "name": "list_tips_gesture_prompt_text",
+      "value": "\u3000\u3000In WaveQ Insight, we provide you with a clear, smooth, and flexible gesture control experience. Leveraging the interaction capabilities of HarmonyOS NEXT, we have designed an intuitive swipe logic while fully supporting the system's standard navigation methods.\n· Design Philosophy\n\u3000\u3000We follow the natural left-to-right reading direction. You can envision the survey flow as a timeline: the left side represents the beginning, and the right side represents the end.\n· Gesture Definitions\n\u3000\u3000Swipe Left: Move forward along the timeline, i.e., proceed to the next step (like turning to the next page).\n\u3000\u3000Swipe Right: Move backward along the timeline, i.e., return to the previous step (like turning back to the previous page).\n· Freedom of Choice, Operate as You Prefer\n\u3000\u3000You can use the specially optimized gestures above to navigate through the survey seamlessly. Alternatively, you are also free to use the system’s built-in navigation methods, such as swipe‑back or edge gestures.\n\u3000\u3000WaveQ Insight is designed to be inclusive and adaptable. Choose the method that feels most natural and convenient to you.\n\u3000\u3000We believe that good interaction should be both intuitive and accommodating. Enjoy your experience!"
+    },
+    {
+      "name": "list_tips_gesture_left_1_text",
+      "value": "1. Swipe Left on Home Screen"
+    },
+    {
+      "name": "list_tips_gesture_left_2_text",
+      "value": "2. Swipe Left in Survey"
+    },
+    {
+      "name": "list_tips_gesture_left_operation_text",
+      "value": "\u3000Tap to View Demo"
+    },
+    {
+      "name": "list_tips_gesture_left_1_item_text",
+      "value": "\u3000Opens the Settings page."
+    },
+    {
+      "name": "list_tips_gesture_left_2_item_1_text",
+      "value": "Phone"
+    },
+    {
+      "name": "list_tips_gesture_left_2_item_2_text",
+      "value": "Tablet"
+    },
+    {
+      "name": "list_tips_gesture_right_1_text",
+      "value": "1. Swipe Right on Home Screen"
+    },
+    {
+      "name": "list_tips_gesture_right_2_text",
+      "value": "2. Swipe Right in Survey"
+    },
+    {
+      "name": "list_tips_gesture_right_3_text",
+      "value": "3. Swipe Right in Settings"
+    },
+    {
+      "name": "list_tips_gesture_right_4_text",
+      "value": "4. Swipe Left in Search"
+    },
+    {
+      "name": "list_tips_gesture_right_1_item_text",
+      "value": "\u3000Opens sidebar."
+    },
+    {
+      "name": "list_tips_gesture_right_2_item_1_text",
+      "value": "Phone"
+    },
+    {
+      "name": "list_tips_gesture_right_2_item_2_text",
+      "value": "Tablet"
+    },
+    {
+      "name": "list_tips_gesture_right_3_item_text",
+      "value": "\u3000Goes back to the previous menu."
+    },
+    {
+      "name": "list_tips_gesture_right_4_item_text",
+      "value": "\u3000Returns to the Home screen."
+    },
+
+
+    {
+      "name": "list_about_version_text",
+      "value": "Version"
+    },
+    {
+      "name": "list_about_contact_us_text",
+      "value": "Contact Us"
+    },
+    {
+      "name": "list_about_icp_text",
+      "value": "Tianjin ICP Filing No. 2025039701-1A"
+    },
+    {
+      "name": "list_about_copy_right_text",
+      "value": "Copyright © 2025 WaveQ Insight. All Rights Reserved."
+    }
+  ]
+}

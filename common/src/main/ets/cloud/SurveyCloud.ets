@@ -54,6 +54,19 @@ export class QuestionCloud extends cloudDatabase.DatabaseObject {
   required: boolean = true;
 }
 
+export class OptionCloud extends cloudDatabase.DatabaseObject {
+  public naturalbase_ClassName(): string {
+    return "Option";
+  }
+
+  // 问卷对应的问题选项 id
+  id: string = '';
+  // 问卷对应的问题 id
+  question_id: string = '';
+  // 选项片段
+  option_part: string = '';
+}
+
 export class SubmissionCloud extends cloudDatabase.DatabaseObject {
   public naturalbase_ClassName(): string {
     return "Submission";

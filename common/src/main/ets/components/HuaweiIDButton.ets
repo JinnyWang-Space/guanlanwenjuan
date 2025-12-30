@@ -3,10 +3,14 @@ import { BusinessError } from "@kit.BasicServicesKit";
 import { cancelAuthorization, dealAllError, getAvatarAndNickName } from "../utils/AccountUtil";
 import { PersistenceV2, promptAction } from "@kit.ArkUI";
 import LoggerUtils from "../utils/Logger";
-import { AppViewModel } from "../viewmodel/AppViewModel";
+import { AppGeneralViewModel, AppViewModel } from "../viewmodel/AppViewModel";
+import { StartVibrator } from "../utils/VibratorUtil";
 
 @ComponentV2
 export struct LoginWithHuaweiButton {
+  // 在 PersistenceV2 中创建一个 type 为 AppGeneralViewModel 的键值对
+  @Local appGeneralData: AppGeneralViewModel =
+    PersistenceV2.globalConnect({ type: AppGeneralViewModel, defaultCreator: () => new AppGeneralViewModel() })!;
   @Local appBasicData: AppViewModel =
     PersistenceV2.globalConnect({ type: AppViewModel, defaultCreator: () => new AppViewModel() })!;
   @Param callback: Function = () => {
@@ -20,6 +24,10 @@ export struct LoginWithHuaweiButton {
      */
       .setAgreementStatus(loginComponentManager.AgreementStatus.ACCEPTED)
       .onClickLoginWithHuaweiIDButton((error: BusinessError, response: loginComponentManager.HuaweiIDCredential) => {
+        // 开启按钮触感反馈
+        if (this.appGeneralData.isHapticButton) {
+          StartVibrator()
+        }
         if (error) {
           dealAllError(error);
           return;
@@ -27,9 +35,10 @@ export struct LoginWithHuaweiButton {
         if (response) {
           // 获取到 Authorization Code
           const authorizationCode = response.authorizationCode;
-          getAvatarAndNickName(this.getUIContext(), (avatarUri: string, nickName: string) => {
-
-            this.callback(avatarUri,nickName);
+          const open_id = response.openID;
+          getAvatarAndNickName(this.getUIContext(), (avatarUri: string, nickName: string, openID?: string) => {
+            openID = open_id;
+            this.callback(avatarUri, nickName, openID);
 
           })
           // this.callback();
@@ -76,13 +85,16 @@ export struct LoginWithHuaweiButton {
 
 @ComponentV2
 export struct ExitWithHuaweiButton {
+  // 在 PersistenceV2 中创建一个 type 为 AppGeneralViewModel 的键值对
+  @Local appGeneralData: AppGeneralViewModel =
+    PersistenceV2.globalConnect({ type: AppGeneralViewModel, defaultCreator: () => new AppGeneralViewModel() })!;
   @Param callback: Function = () => {
   };
 
   build() {
 
     Button() {
-      Text('退出账号')
+      Text($r('app.string.app_log_out_prompt'))
         .fontSize(16)
         .fontWeight(FontWeight.Medium)
         .fontColor(Color.Red)
@@ -91,6 +103,10 @@ export struct ExitWithHuaweiButton {
     .height(40)
     .backgroundColor($r('sys.color.ohos_id_color_button_normal'))
     .onClick(() => {
+      // 开启按钮触感反馈
+      if (this.appGeneralData.isHapticButton) {
+        StartVibrator()
+      }
       cancelAuthorization(this.getUIContext(), () => {
         this.callback();
       })

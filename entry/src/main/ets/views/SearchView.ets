@@ -1,12 +1,21 @@
-import { Survey, WidthBreakpointType, WindowUtil } from "common";
+import { AppAppearanceViewModel,
+  AppGeneralViewModel,
+  StartVibrator, Survey, WidthBreakpointType, WindowUtil } from "common";
 import window from '@ohos.window';
-import { AppStorageV2 } from "@kit.ArkUI";
+import { AppStorageV2, PersistenceV2 } from "@kit.ArkUI";
+import Logger from "common/src/main/ets/utils/Logger";
 
 // 创建窗口实例
 let windowStage: window.WindowStage;
 
 @ComponentV2
 export struct SearchView {
+  // 在 PersistenceV2 中创建一个 type 为 AppAppearanceViewModel 的键值对
+  @Local appAppearanceData: AppAppearanceViewModel =
+    PersistenceV2.globalConnect({ type: AppAppearanceViewModel, defaultCreator: () => new AppAppearanceViewModel() })!;
+  // 在 PersistenceV2 中创建一个 type 为 AppGeneralViewModel 的键值对
+  @Local appGeneralData: AppGeneralViewModel =
+    PersistenceV2.globalConnect({ type: AppGeneralViewModel, defaultCreator: () => new AppGeneralViewModel() })!;
   // 在 AppStorageV2中创建一个 key为 WindowUtil的键值对
   @Local windowUtil: WindowUtil =
     AppStorageV2.connect(WindowUtil, () => new WindowUtil(windowStage.getMainWindowSync()))!;
@@ -22,9 +31,15 @@ export struct SearchView {
     this.getSurveyInfo();
   }
 
+  // 创建滑动手势配置参数对象
+  private panOption: PanGestureOptions = new PanGestureOptions({ direction: PanDirection.Right });
+
   build() {
     NavDestination() {
       Stack({ alignContent: Alignment.TopStart }) {
+
+        Image(this.appAppearanceData.staticWallpaper)
+
         // 标题栏
         Row({ space: 12 }) {
           Button() {
@@ -36,11 +51,21 @@ export struct SearchView {
           .height(40)
           .backgroundColor($r('sys.color.ohos_id_color_button_normal'))
           .onClick(() => {
+            // 开启按钮触感反馈
+            if (this.appGeneralData.isHapticButton) {
+              StartVibrator()
+            }
             this.pageInfos.pop();
           })
 
-          Search({ placeholder: '请输入您要搜索的问卷', value: this.searchText!! })
+          Search({ placeholder: $r('app.string.search_view_search_text'), value: this.searchText!! })
             .layoutWeight(1)
+            .onClick(()=>{
+              // 开启滑动触感反馈
+              if (this.appGeneralData.isHapticButton) {
+                StartVibrator()
+              }
+            })
         }
         .width('100%')
         .height(this.getUIContext().px2vp(this.windowUtil.mainWindowInfo.AvoidSystem?.topRect.height) + 56)
@@ -49,7 +74,6 @@ export struct SearchView {
           left: 16, right: 16
         })
         .zIndex(1)
-        .backgroundBlurStyle(BlurStyle.BACKGROUND_THICK)
 
         Scroll() {
           Column() {
@@ -65,13 +89,12 @@ export struct SearchView {
                   Row() {
                     Row() {
                       Column() {
-                        SymbolGlyph($r('sys.symbol.plus'))
-                          .fontSize(24)
                       }
                       .width(48)
                       .height('100%')
                       .justifyContent(FlexAlign.Center)
                       .backgroundColor(Color.Gray)
+                      .backgroundImage($r('app.media.surveyBackground'))
                       .borderRadius({
                         topLeft: 2,
                         bottomLeft: 2,
@@ -118,6 +141,10 @@ export struct SearchView {
                     right: 6
                   })
                   .onClick(() => {
+                    // 开启列表项触感反馈
+                    if (this.appGeneralData.isHapticListItem) {
+                      StartVibrator()
+                    }
                     this.pageInfos.pushPath({ name: 'CheckSurveyView', param: surveyForSearch.id });
                   })
                   .clickEffect({ level: ClickEffectLevel.LIGHT })
@@ -138,7 +165,17 @@ export struct SearchView {
         .edgeEffect(EdgeEffect.Spring)
         .align(Alignment.Top)
       }
-      .backgroundColor($r('sys.color.background_secondary'))
+      .gesture(
+        PanGesture(this.panOption)
+          .onActionEnd((event: GestureEvent) => {
+            // 开启滑动触感反馈
+            if (this.appGeneralData.isHapticSwipe) {
+              StartVibrator()
+            }
+            this.pageInfos.pop();
+            Logger.info('[ContentView.PanGesture]', 'Pan end');
+          })
+      )
     }
     .hideTitleBar(true)
     .hideBackButton(true)

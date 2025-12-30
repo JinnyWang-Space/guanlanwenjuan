@@ -1,0 +1,164 @@
+{
+  "string": [
+    {
+      "name": "EntryAbility_label",
+      "value": "观澜问卷"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "entry"
+    },
+    {
+      "name": "my_surveys",
+      "value": "我的问卷"
+    },
+    {
+      "name": "side_bar_all",
+      "value": "全部问卷"
+    },
+    {
+      "name": "side_bar_collecting",
+      "value": "正在收集"
+    },
+    {
+      "name": "side_bar_collected",
+      "value": "收集完成"
+    },
+    {
+      "name": "side_bar_no_collect",
+      "value": "未收集"
+    },
+    {
+      "name": "side_bar_delete",
+      "value": "废纸篓"
+    },
+    {
+      "name": "resources",
+      "value": "资源"
+    },
+    {
+      "name": "side_bar_survey_market",
+      "value": "问卷模板"
+    },
+    {
+      "name": "create_survey",
+      "value": "添加问卷"
+    },
+    {
+      "name": "move_to_trash",
+      "value": "删除"
+    },
+    {
+      "name": "restore",
+      "value": "恢复"
+    },
+    {
+      "name": "permanently_delete",
+      "value": "永久删除"
+    },
+
+
+    {
+      "name": "usage_count_text",
+      "value": "引用量"
+    },
+
+
+    {
+      "name": "search_text",
+      "value": "搜索"
+    },
+    {
+      "name": "search_view_search_text",
+      "value": "请输入您要搜索的问卷"
+    },
+
+
+    {
+      "name": "system_share_is_static_wallpaper_text",
+      "value": "是否作为静态壁纸？"
+    },
+
+
+    {
+      "name": "survey_edit_warning_text",
+      "value": "问卷处于暂不发放才可编辑"
+    },
+    {
+      "name": "unnamed_survey_text",
+      "value": "未命名问卷"
+    },
+    {
+      "name": "survey_preview_text",
+      "value": "预览"
+    },
+    {
+      "name": "survey_edit_text",
+      "value": "编辑"
+    },
+    {
+      "name": "survey_analyze_text",
+      "value": "数据统计"
+    },
+    {
+      "name": "survey_description_text",
+      "value": "问卷描述"
+    },
+    {
+      "name": "survey_description_create_prompt_text",
+      "value": "请输入您的问卷描述"
+    },
+    {
+      "name": "survey_description_had_text",
+      "value": "尊敬的参与者：\n您好！感谢您抽出宝贵时间来参与我们的问卷调查。本次调查旨在了解您对该问卷的看法和需求。您的意见对我们了解该领域至关重要。\n我们保证您的所有回答都将严格保密，并仅用于本次研究目的。\n再次感谢您的参与与支持！祝您一切顺利！"
+    },
+    {
+      "name": "survey_count_text",
+      "value": "问卷数量"
+    },
+    {
+      "name": "survey_status_text",
+      "value": "问卷状态"
+    },
+    {
+      "name": "status_publish_now_text",
+      "value": "立即发放"
+    },
+    {
+      "name": "status_save_draft_text",
+      "value": "暂不发放"
+    },
+    {
+      "name": "qr_link_text",
+      "value": "二维码链接"
+    },
+    {
+      "name": "use_template_text",
+      "value": "引用模板"
+    },
+    {
+      "name": "survey_title_create_prompt_text",
+      "value": "请输入问卷名称"
+    },
+    {
+      "name": "question_create_prompt_text",
+      "value": "请输入您的问题"
+    },
+    {
+      "name": "option_create_prompt_left_text",
+      "value": "请输入您选项"
+    },
+    {
+      "name": "option_create_prompt_right_text",
+      "value": "的问题"
+    },
+    {
+      "name": "option_type_create_text",
+      "value": "添加"
+    },
+    {
+      "name": "survey_collection_num_text",
+      "value": "当前收集问卷数量"
+    }
+  ]
+}

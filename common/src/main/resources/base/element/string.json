@@ -1,20 +1,122 @@
 {
   "string": [
     {
-      "name": "page_show",
-      "value": "page from package"
+      "name": "module_desc",
+      "value": "common"
     },
     {
-      "name": "tab_bar_home",
-      "value": "首页"
+      "name": "app_name",
+      "value": "观澜问卷"
     },
     {
-      "name": "tab_bar_select",
-      "value": "甄选"
+      "name": "app_slogan",
+      "value": "洞察每一道波澜"
     },
     {
-      "name": "tab_bar_mine",
-      "value": "我的"
+      "name": "app_statement_part_1",
+      "value": "本应用提供问卷创建、分发和统计等服务，本应用需用户联网、登录华为账号等功能以便为您提供更好的服务。我们将遵守"
+    },
+    {
+      "name": "app_statement_part_2",
+      "value": "隐私声明"
+    },
+    {
+      "name": "app_statement_part_3",
+      "value": "、"
+    },
+    {
+      "name": "app_statement_part_4",
+      "value": "用户协议"
+    },
+    {
+      "name": "app_statement_part_5",
+      "value": "。点击“同意”表示您已同意使用。"
+    },
+    {
+      "name": "app_statement_operation_text_cancel",
+      "value": "取消"
+    },
+    {
+      "name": "app_statement_operation_text_agree",
+      "value": "同意"
+    },
+    {
+      "name": "app_greeting",
+      "value": "你好，"
+    },
+    {
+      "name": "app_log_in_prompt",
+      "value": "请登录"
+    },
+    {
+      "name": "app_log_out_prompt",
+      "value": "退出账号"
+    },
+    {
+      "name": "app_welcome_prompt_part_1",
+      "value": "欢迎使用"
+    },
+    {
+      "name": "app_welcome_prompt_part_2",
+      "value": "开启你的专业调研之旅"
+    },
+    {
+      "name": "app_started_text",
+      "value": "点击进入"
+    },
+
+
+    {
+      "name": "is_loading_text",
+      "value": "正在加载..."
+    },
+    {
+      "name": "is_loading_success_text",
+      "value": "加载成功"
+    },
+    {
+      "name": "is_loading_failed_text",
+      "value": "加载失败"
+    },
+    {
+      "name": "button_cancel_text",
+      "value": "取消"
+    },
+    {
+      "name": "button_confirm_text",
+      "value": "确认"
+    },
+
+
+    {
+      "name": "survey_attribute_text",
+      "value": "属性"
+    },
+    {
+      "name": "survey_content_text",
+      "value": "内容"
+    },
+    {
+      "name": "single_choice_text",
+      "value": "单选"
+    },
+    {
+      "name": "multiple_choice_text",
+      "value": "多选"
+    },
+    {
+      "name": "true_false_choice_text",
+      "value": "判断"
+    },
+    {
+      "name": "text_choice_text",
+      "value": "文本"
+    },
+
+
+    {
+      "name": "network_connect_prompt_text",
+      "value": "请先连接网络"
     }
   ]
 }

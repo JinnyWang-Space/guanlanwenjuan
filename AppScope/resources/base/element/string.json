@@ -3,6 +3,22 @@
     {
       "name": "app_name",
       "value": "guanlanwenjuan"
+    },
+    {
+      "name": "permission_internet",
+      "value": "互联网权限，用于联网操作"
+    },
+    {
+      "name": "permission_get_network_info",
+      "value": "获取网络信息权限，用于获取设备网络连接信息（是否联网）"
+    },
+    {
+      "name": "permission_vibrate",
+      "value": "震动马达权限，用于点击反馈（物理效果-震动）"
+    },
+    {
+      "name": "permission_detect_gesture",
+      "value": "持手感知权限，用于获取握手状态"
     }
   ]
 }

@@ -1,0 +1,402 @@
+{
+  "string": [
+    {
+      "name": "page_show",
+      "value": "page from package"
+    },
+    {
+      "name": "settings_text",
+      "value": "设置"
+    },
+    {
+      "name": "list_title_support_text",
+      "value": "为用户服务"
+    },
+    {
+      "name": "list_item_feedback_text",
+      "value": "意见反馈"
+    },
+    {
+      "name": "list_title_data_text",
+      "value": "数据"
+    },
+    {
+      "name": "list_item_account_text",
+      "value": "账号管理"
+    },
+    {
+      "name": "list_title_appearance_text",
+      "value": "视觉"
+    },
+    {
+      "name": "list_item_wallpaper_text",
+      "value": "壁纸"
+    },
+    {
+      "name": "list_item_component_text",
+      "value": "组件"
+    },
+    {
+      "name": "list_item_show_hide_components_text",
+      "value": "控件显隐"
+    },
+    {
+      "name": "list_item_holding_hand_text",
+      "value": "智感握持"
+    },
+    {
+      "name": "list_title_general_text",
+      "value": "通用"
+    },
+    {
+      "name": "list_item_language_text",
+      "value": "语言模式"
+    },
+    {
+      "name": "list_item_color_mode_text",
+      "value": "深浅色模式"
+    },
+    {
+      "name": "list_item_sounds_notifications_text",
+      "value": "音效与通知"
+    },
+    {
+      "name": "list_title_guide_text",
+      "value": "指南"
+    },
+    {
+      "name": "list_item_tips_text",
+      "value": "使用提示"
+    },
+    {
+      "name": "list_item_changelog_text",
+      "value": "更新日志"
+    },
+    {
+      "name": "list_title_about_us_text",
+      "value": "了解我们"
+    },
+    {
+      "name": "list_item_privacy_agreement_text",
+      "value": "隐私声明"
+    },
+    {
+      "name": "list_item_user_agreement_text",
+      "value": "用户协议"
+    },
+    {
+      "name": "list_item_about_text",
+      "value": "关于"
+    },
+
+
+    {
+      "name": "category_text",
+      "value": "问题类型"
+    },
+    {
+      "name": "bug_text",
+      "value": "功能异常"
+    },
+    {
+      "name": "suggestions_text",
+      "value": "产品建议"
+    },
+    {
+      "name": "category_warning_text",
+      "value": "请选择反馈类型"
+    },
+    {
+      "name": "description_suggestions_text",
+      "value": "问题描述或建议"
+    },
+    {
+      "name": "description_suggestions_placeholder_text",
+      "value": "请尽可能全面地描述您遇到的问题或是建议。字数大于20。"
+    },
+    {
+      "name": "description_suggestions_warning_text",
+      "value": "请输入至少20个字"
+    },
+    {
+      "name": "device_type_text",
+      "value": "设备类型"
+    },
+    {
+      "name": "device_phone_text",
+      "value": "手机"
+    },
+    {
+      "name": "device_tablet_text",
+      "value": "平板"
+    },
+    {
+      "name": "device_warning_text",
+      "value": "请选择设备类型"
+    },
+    {
+      "name": "device_type_placeholder_text",
+      "value": "请输入您的设备类型，如：Mate 80"
+    },
+    {
+      "name": "device_content_warning_text",
+      "value": "该项不能为空"
+    },
+    {
+      "name": "contact_information_text",
+      "value": "联系方式"
+    },
+    {
+      "name": "contact_information_placeholder_text",
+      "value": "请输入手机号或邮箱，方便我们与您对接问题。"
+    },
+    {
+      "name": "contact_content_warning_text",
+      "value": "请输入合理的手机号或邮箱地址"
+    },
+    {
+      "name": "submit_text",
+      "value": "提交"
+    },
+    {
+      "name": "submit_status_sending_text",
+      "value": "正在发送..."
+    },
+    {
+      "name": "submit_status_sent_text",
+      "value": "发送成功"
+    },
+    {
+      "name": "submit_status_failed_text",
+      "value": "发送失败"
+    },
+
+
+    {
+      "name": "list_account_huawei_id_text",
+      "value": "华为账号"
+    },
+    {
+      "name": "list_account_unknown_text",
+      "value": "未登录"
+    },
+
+
+    {
+      "name": "list_appearance_preview_text",
+      "value": "预览"
+    },
+    {
+      "name": "list_appearance_sidebar_text",
+      "value": "我的问卷"
+    },
+    {
+      "name": "list_wallpaper_static_text",
+      "value": "静态壁纸"
+    },
+    {
+      "name": "list_wallpaper_clear_text",
+      "value": "置空壁纸"
+    },
+
+
+    {
+      "name": "list_component_create_survey_text",
+      "value": "添加问卷"
+    },
+    {
+      "name": "list_component_component_blur_text",
+      "value": "组件高斯模糊"
+    },
+
+
+    {
+      "name": "list_shc_list_title_button_text",
+      "value": "控件按钮"
+    },
+    {
+      "name": "list_shc_button_all_text",
+      "value": "全部按钮控件"
+    },
+    {
+      "name": "list_shc_button_sidebar_text",
+      "value": "侧边栏按钮"
+    },
+    {
+      "name": "list_shc_button_search_text",
+      "value": "搜索按钮"
+    },
+    {
+      "name": "list_shc_button_scan_text",
+      "value": "扫一扫按钮"
+    },
+    {
+      "name": "list_shc_haptic_settings_text",
+      "value": "设置按钮"
+    },
+
+
+    {
+      "name": "list_language_follow_system_text",
+      "value": "跟随系统"
+    },
+    {
+      "name": "list_language_simplified_chinese_text",
+      "value": "简体中文"
+    },
+    {
+      "name": "list_language_english_text",
+      "value": "英文"
+    },
+
+
+    {
+      "name": "list_color_mode_follow_system_text",
+      "value": "跟随系统"
+    },
+    {
+      "name": "list_color_mode_light_text",
+      "value": "浅色模式"
+    },
+    {
+      "name": "list_color_mode_dark_text",
+      "value": "深色模式"
+    },
+
+
+    {
+      "name": "list_sn_list_title_haptic_text",
+      "value": "触感反馈"
+    },
+    {
+      "name": "list_sn_haptic_all_text",
+      "value": "全部触感反馈"
+    },
+    {
+      "name": "list_sn_haptic_button_text",
+      "value": "按钮触感反馈"
+    },
+    {
+      "name": "list_sn_haptic_swipe_text",
+      "value": "滑动触感反馈"
+    },
+    {
+      "name": "list_sn_haptic_list_item_text",
+      "value": "列表触感反馈"
+    },
+    {
+      "name": "list_sn_haptic_menu_text",
+      "value": "菜单触感反馈"
+    },
+
+
+    {
+      "name": "list_tips_list_title_gesture_text",
+      "value": "关于手势操作"
+    },
+    {
+      "name": "list_tips_gesture_swipe_left_text",
+      "value": "左划操作"
+    },
+    {
+      "name": "list_tips_gesture_swipe_right_text",
+      "value": "右划操作"
+    },
+    {
+      "name": "list_tips_list_title_account_text",
+      "value": "关于账号问题"
+    },
+
+
+    {
+      "name": "list_tips_gesture_prompt_text",
+      "value": "\u3000\u3000在观澜问卷中，我们为您提供清晰、流畅且灵活的手势操作体验。基于HarmonyOS NEXT的交互能力，我们设计了一套符合直觉的滑动逻辑，同时也完整支持系统标准的导航方式。\n· 设计理念\n\u3000\u3000我们遵循从左到右的自然阅读顺序。您可以将问卷流程视作一条时间线：左侧是开始，右侧是结束。\n· 手势定义\n\u3000\u3000向左滑动：沿时间线向前，即进入下一步（如同翻向下一页）。\n\u3000\u3000向右滑动：沿时间线向后，即返回上一步（如同翻回上一页）。\n· 自由选择，随心操作\n\u3000\u3000您可以使用以上专门优化的手势，在问卷中流畅穿梭；也完全可以直接使用系统自带的侧滑返回、边缘手势等导航方式。\n\u3000\u3000观澜问卷兼容并蓄，您可以根据习惯选择最喜欢、最顺手的方式。\n\u3000\u3000我们相信，好的交互应当贴合直觉，也包容多样。祝您使用愉快！"
+    },
+
+
+    {
+      "name": "list_tips_gesture_left_1_text",
+      "value": "1. 桌面左滑"
+    },
+    {
+      "name": "list_tips_gesture_left_2_text",
+      "value": "2. 问卷中左滑"
+    },
+
+
+    {
+      "name": "list_tips_gesture_left_operation_text",
+      "value": "\u3000点击查看演示"
+    },
+    {
+      "name": "list_tips_gesture_left_1_item_text",
+      "value": "\u3000在桌面左滑呼出设置页面"
+    },
+    {
+      "name": "list_tips_gesture_left_2_item_1_text",
+      "value": "手机"
+    },
+    {
+      "name": "list_tips_gesture_left_2_item_2_text",
+      "value": "平板"
+    },
+
+
+    {
+      "name": "list_tips_gesture_right_1_text",
+      "value": "1. 桌面右滑"
+    },
+    {
+      "name": "list_tips_gesture_right_2_text",
+      "value": "2. 问卷中右滑"
+    },
+    {
+      "name": "list_tips_gesture_right_3_text",
+      "value": "3. 设置中右滑"
+    },
+    {
+      "name": "list_tips_gesture_right_4_text",
+      "value": "4. 搜索页面右滑"
+    },
+
+
+    {
+      "name": "list_tips_gesture_right_1_item_text",
+      "value": "\u3000在桌面左滑呼出侧边栏"
+    },
+    {
+      "name": "list_tips_gesture_right_2_item_1_text",
+      "value": "手机"
+    },
+    {
+      "name": "list_tips_gesture_right_2_item_2_text",
+      "value": "平板"
+    },
+    {
+      "name": "list_tips_gesture_right_3_item_text",
+      "value": "\u3000设置中右滑返回上一级菜单"
+    },
+    {
+      "name": "list_tips_gesture_right_4_item_text",
+      "value": "\u3000搜索页面右滑返回主页"
+    },
+
+
+    {
+      "name": "list_about_version_text",
+      "value": "版本"
+    },
+    {
+      "name": "list_about_contact_us_text",
+      "value": "联系我们"
+    },
+    {
+      "name": "list_about_icp_text",
+      "value": "津ICP备2025039701号-1A"
+    },
+    {
+      "name": "list_about_copy_right_text",
+      "value": "版权所有 © 2025 观澜问卷 保留一切权利"
+    }
+  ]
+}

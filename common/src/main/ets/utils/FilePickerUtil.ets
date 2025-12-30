@@ -4,7 +4,7 @@ import picker from "@ohos.file.picker";
 import { common } from "@kit.AbilityKit"
 import { image } from '@kit.ImageKit';
 import { fileIo } from '@kit.CoreFileKit';
-import resourceManager from "@ohos.resourceManager";
+import Logger from '../utils//Logger'
 
 // 拉起图库选择图片/视频，返回图片url值，该值为只读
 export function mediaPicker(type: number, pickerNum: number, callback: Function) {
@@ -43,36 +43,35 @@ export function mediaPicker(type: number, pickerNum: number, callback: Function)
 }
 
 
-export async function savePixelMapToAlbum(context: common.UIAbilityContext,pixelMap: image.PixelMap) {
+export async function savePixelMapToAlbum(srcFileUri: string, phAccessHelper: photoAccessHelper.PhotoAccessHelper) {
 
-  const resourceMgr: resourceManager.ResourceManager = context.resourceManager;
-  // "beer.jpeg" is the name of the image file under the rawfile directory, which can be modified and used according to your own needs
-  const fileData: Uint8Array = await resourceMgr.getRawFileContent('beer.jpeg');
-  let buffer = new Uint8Array(fileData).buffer as object as ArrayBuffer;
-  let imageResource = image.createImageSource(buffer);
-  let opts: image.DecodingOptions = { editable: true };
-  pixelMap = await imageResource.createPixelMap(opts);
+  // 使用弹窗授权保存媒体资源
+  try {
+    // 指定待保存到媒体库的位于应用沙箱的图片uri。
+    let srcFileUris: Array<string> = [
+      srcFileUri
+    ];
+    // 指定待保存照片的创建选项，包括文件后缀和照片类型，标题和照片子类型可选。
+    let photoCreationConfigs: Array<photoAccessHelper.PhotoCreationConfig> = [
+      {
+        title: '问卷分享二维码', // 可选。
+        fileNameExtension: 'jpg',
+        photoType: photoAccessHelper.PhotoType.IMAGE,
+        subtype: photoAccessHelper.PhotoSubtype.DEFAULT, // 可选。
+      }
+    ];
+    // 基于弹窗授权的方式获取媒体库的目标uri。
+    let desFileUris: Array<string> = await phAccessHelper.showAssetsCreationDialog(srcFileUris, photoCreationConfigs);
+    // 将来源于应用沙箱的照片内容写入媒体库的目标uri。
+    let desFile: fileIo.File = await fileIo.open(desFileUris[0], fileIo.OpenMode.WRITE_ONLY);
+    let srcFile: fileIo.File = await fileIo.open(srcFileUri, fileIo.OpenMode.READ_ONLY);
+    await fileIo.copyFile(srcFile.fd, desFile.fd);
+    fileIo.closeSync(srcFile);
+    fileIo.closeSync(desFile);
+    Logger.info('[FilePickerUtils.savePixelToAlbum]', 'create asset by dialog successfully');
+  } catch (err) {
+    Logger.error('[FilePickerUtils.savePixelToAlbum]',
+      `failed to create asset by dialog successfully errCode is: ${err.code}, ${err.message}`);
+  }
 
-  // Obtain the save path of the album
-  let helper = photoAccessHelper.getPhotoAccessHelper(context);
-  let uri = await helper.createAsset(photoAccessHelper.PhotoType.IMAGE, 'jpeg');
-  let file = await fileIo.open(uri, fileIo.OpenMode.READ_WRITE | fileIo.OpenMode.CREATE);
-  let imagePackerApi = image.createImagePacker();
-  let packOpts: image.PackingOption = { format: 'image/jpeg', quality: 98 };
-
-  imagePackerApi.packToFile(pixelMap, file.fd, packOpts, (err: BusinessError) => {
-    if (err) {
-      console.error(`Failed to pack the image to file.code ${err.code},message is ${err.message}`);
-    } else {
-      console.info('Succeeded in packing the image to file.');
-      imagePackerApi.release((err: BusinessError) => {
-        if (err) {
-          console.error(`Failed to release the image source instance.code ${err.code},message is ${err.message}`);
-        } else {
-          console.info('Succeeded in releasing the image source instance.');
-          fileIo.close(file.fd);
-        }
-      })
-    }
-  })
 }

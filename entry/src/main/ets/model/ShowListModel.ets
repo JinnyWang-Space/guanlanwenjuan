@@ -8,4 +8,6 @@ export class ShowListModel {
     this.label = label;
     this.deltaT = deltaT;
   }
+
+
 }

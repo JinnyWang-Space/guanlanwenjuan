@@ -38,5 +38,6 @@
       "pageSourceFile": "src/main/ets/views/ToolView.ets",
       "buildFunction": "ToolBuilder"
     }
+
   ]
 }

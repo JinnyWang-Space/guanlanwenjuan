@@ -9,4 +9,9 @@ export class SideBarListViewModel{
     new SideBarListModel(4,$r('app.string.side_bar_delete'),$r('sys.symbol.trash'),0),
     new SideBarListModel(5,$r('app.string.side_bar_survey_market'),$r('sys.symbol.bookmark'),0)
   ]
+
+  updateSideBarList(){
+
+  }
+
 }

@@ -234,7 +234,7 @@ export class DistributedDB {
       // }
       return updatedRows > 0;
     } catch (error) {
-      Logger.error('Failed to restore survey:', JSON.stringify(error));
+      Logger.error('[DistributedDB.restoreSurvey]','Failed to restore survey:', JSON.stringify(error));
       return false;
     }
   }
@@ -278,7 +278,7 @@ export class DistributedDB {
 
       return true;
     } catch (error) {
-      Logger.error('Failed to update survey:', JSON.stringify(error));
+      Logger.error('[DistributedDB.updateSurvey]','Failed to update survey:', JSON.stringify(error));
       return false;
     }
   }

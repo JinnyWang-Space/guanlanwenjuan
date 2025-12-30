@@ -1,0 +1,163 @@
+{
+  "string": [
+    {
+      "name": "EntryAbility_label",
+      "value": "WaveQ Insight"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "entry"
+    },
+    {
+      "name": "my_surveys",
+      "value": "My Surveys"
+    },
+    {
+      "name": "side_bar_all",
+      "value": "All Surveys"
+    },
+    {
+      "name": "side_bar_collecting",
+      "value": "In Progress"
+    },
+    {
+      "name": "side_bar_collected",
+      "value": "Completed"
+    },
+    {
+      "name": "side_bar_no_collect",
+      "value": "Not Started"
+    },
+    {
+      "name": "side_bar_delete",
+      "value": "Trash"
+    },
+    {
+      "name": "resources",
+      "value": "Resources"
+    },
+    {
+      "name": "side_bar_survey_market",
+      "value": "Survey Templates"
+    },
+    {
+      "name": "create_survey",
+      "value": "Create Survey"
+    },
+    {
+      "name": "move_to_trash",
+      "value": "Move to Trash"
+    },
+    {
+      "name": "restore",
+      "value": "Restore"
+    },
+    {
+      "name": "permanently_delete",
+      "value": "Permanently Delete"
+    },
+
+
+    {
+      "name": "usage_count_text",
+      "value": "Usage Count"
+    },
+
+
+    {
+      "name": "search_text",
+      "value": "Search"
+    },
+    {
+      "name": "search_view_search_text",
+      "value": "Search surveys"
+    },
+
+
+    {
+      "name": "system_share_is_static_wallpaper_text",
+      "value": "Set as Static Wallpaper?"
+    },
+
+    {
+      "name": "survey_edit_warning_text",
+      "value": "A survey can only be edited if its status is set to “Not Active”"
+    },
+    {
+      "name": "unnamed_survey_text",
+      "value": "Unnamed Survey"
+    },
+    {
+      "name": "survey_preview_text",
+      "value": "Preview"
+    },
+    {
+      "name": "survey_edit_text",
+      "value": "Edit"
+    },
+    {
+      "name": "survey_analyze_text",
+      "value": "Analyze"
+    },
+    {
+      "name": "survey_description_text",
+      "value": "Survey Description"
+    },
+    {
+      "name": "survey_description_create_prompt_text",
+      "value": "Enter survey description"
+    },
+    {
+      "name": "survey_description_had_text",
+      "value": "Respected Participant,\nHello! Thank you for taking the time to participate in our survey. This questionnaire is designed to understand your views and needs regarding this survey. Your feedback is crucial to our understanding of this field.\nWe assure you that all your responses will be kept strictly confidential and used solely for the purposes of this research.\nThank you once again for your participation and support. All the best!"
+    },
+    {
+      "name": "survey_count_text",
+      "value": "Survey Count"
+    },
+    {
+      "name": "survey_status_text",
+      "value": "Survey Status"
+    },
+    {
+      "name": "status_publish_now_text",
+      "value": "Publish Now"
+    },
+    {
+      "name": "status_save_draft_text",
+      "value": "Do Not Distribute"
+    },
+    {
+      "name": "qr_link_text",
+      "value": "QR Code Link"
+    },
+    {
+      "name": "use_template_text",
+      "value": "Use a Template"
+    },
+    {
+      "name": "survey_title_create_prompt_text",
+      "value": "Enter survey title"
+    },
+    {
+      "name": "question_create_prompt_text",
+      "value": "Enter your question"
+    },
+    {
+      "name": "option_create_prompt_left_text",
+      "value": "Enter your option "
+    },
+    {
+      "name": "option_create_prompt_right_text",
+      "value": ""
+    },
+    {
+      "name": "option_type_create_text",
+      "value": "Add "
+    },
+    {
+      "name": "survey_collection_num_text",
+      "value": "Surveys in Collection"
+    }
+  ]
+}

@@ -5,13 +5,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "storeFile": "D:/HarmonyOS NEXT/Test/guanlanwenjuan/test.p12",
-          "storePassword": "0000001DEDAEEA37BE82865ABA2F563A7DB78D581DADC82A91C2E647D69907AA9E09E67564B088C88593FDD1D2",
+          "certpath": "D:/HarmonyOS NEXT/Test/guanlanwenjuan/guanlanwenjuan_test.cer",
           "keyAlias": "test",
-          "keyPassword": "0000001D42B52760DC259921605AA1ADD20EFBA3D837B4F4CE0F1F7E95687592F200E13B00F06AE6121532E4A0",
-          "signAlg": "SHA256withECDSA",
+          "keyPassword": "0000001DC042F9F64A7553A3034395555F3D2EB493F079C27C8A33B573755E4D408429831B73EC835EC9F0DB02",
           "profile": "D:/HarmonyOS NEXT/Test/guanlanwenjuan/guanlanwenjuan_testDebug.p7b",
-          "certpath": "D:/HarmonyOS NEXT/Test/guanlanwenjuan/guanlanwenjuan_test.cer"
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "D:/HarmonyOS NEXT/Test/guanlanwenjuan/test.p12",
+          "storePassword": "0000001D0D6E44B9657FAFC28D46FCD482C0B1BF39D5BCDA56D218588368C861B4A8E6A42A8A799ED784F867DC"
         }
       }
     ],
@@ -19,8 +19,8 @@
       {
         "name": "default",
         "signingConfig": "default",
-        "targetSdkVersion": "6.0.0(20)",
-        "compatibleSdkVersion": "6.0.0(20)",
+        "targetSdkVersion": "6.0.1(21)",
+        "compatibleSdkVersion": "6.0.1(21)",
         "runtimeOS": "HarmonyOS",
         "buildOption": {
           "strictMode": {
@@ -32,7 +32,7 @@
     ],
     "buildModeSet": [
       {
-        "name": "debug",
+        "name": "debug"
       },
       {
         "name": "release"
@@ -55,6 +55,10 @@
     {
       "name": "common",
       "srcPath": "./common",
+    },
+    {
+      "name": "setting",
+      "srcPath": "./setting",
     }
   ]
 }

@@ -1,20 +1,122 @@
 {
   "string": [
     {
-      "name": "page_show",
-      "value": "page from package"
+      "name": "module_desc",
+      "value": "common"
     },
     {
-      "name": "tab_bar_home",
-      "value": "Home"
+      "name": "app_name",
+      "value": "WaveQ Insight"
     },
     {
-      "name": "tab_bar_select",
-      "value": "Select"
+      "name": "app_slogan",
+      "value": "From Voices to Insights"
     },
     {
-      "name": "tab_bar_mine",
-      "value": "Mine"
+      "name": "app_statement_part_1",
+      "value": "This application provides services including survey creation, distribution, and statistical analysis. It requires an internet connection and a HUAWEI ID login to deliver an enhanced user experience. We are committed to complying with our "
+    },
+    {
+      "name": "app_statement_part_2",
+      "value": "Privacy Statement"
+    },
+    {
+      "name": "app_statement_part_3",
+      "value": " and "
+    },
+    {
+      "name": "app_statement_part_4",
+      "value": "User Agreement"
+    },
+    {
+      "name": "app_statement_part_5",
+      "value": ". Tapping \"Agree\" indicates that you acknowledge and consent to these terms."
+    },
+    {
+      "name": "app_statement_operation_text_cancel",
+      "value": "Cancel"
+    },
+    {
+      "name": "app_statement_operation_text_agree",
+      "value": "Agree"
+    },
+    {
+      "name": "app_greeting",
+      "value": "Hello, "
+    },
+    {
+      "name": "app_log_in_prompt",
+      "value": "Log in"
+    },
+    {
+      "name": "app_log_out_prompt",
+      "value": "Log out"
+    },
+    {
+      "name": "app_welcome_prompt_part_1",
+      "value": "Welcome to WaveQ Insight"
+    },
+    {
+      "name": "app_welcome_prompt_part_2",
+      "value": "Begin your professional research journey"
+    },
+    {
+      "name": "app_started_text",
+      "value": "Get Started"
+    },
+
+
+    {
+      "name": "is_loading_text",
+      "value": "Loading..."
+    },
+    {
+      "name": "is_loading_success_text",
+      "value": "Success"
+    },
+    {
+      "name": "is_loading_failed_text",
+      "value": "Loading Error"
+    },
+    {
+      "name": "button_cancel_text",
+      "value": "Cancel"
+    },
+    {
+      "name": "button_confirm_text",
+      "value": "Confirm"
+    },
+
+
+    {
+      "name": "survey_attribute_text",
+      "value": "Attribute"
+    },
+    {
+      "name": "survey_content_text",
+      "value": "Content"
+    },
+    {
+      "name": "single_choice_text",
+      "value": "Single"
+    },
+    {
+      "name": "multiple_choice_text",
+      "value": "Multiple"
+    },
+    {
+      "name": "true_false_choice_text",
+      "value": "True/False"
+    },
+    {
+      "name": "text_choice_text",
+      "value": "Text"
+    },
+
+
+    {
+      "name": "network_connect_prompt_text",
+      "value": "Please connect to the internet and try again."
     }
   ]
 }

@@ -7,6 +7,18 @@
     {
       "name": "list_on_foucs_color",
       "value": "#FF4D605F"
+    },
+    {
+      "name": "list_card_bg_color",
+      "value": "#212224"
+    },
+    {
+      "name": "bind_sheet_bg_color",
+      "value": "#212224"
+    },
+    {
+      "name": "sheet_list_card_bg_color",
+      "value": "#37383A"
     }
   ]
 }
